@@ -1,0 +1,49 @@
+name: Validate and package Vanilla BiS Tracker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: 'Publish tagged GitHub Release for the version in the TOC (only from main)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  check-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static Vanilla 1.12 checks
+        run: python3 scripts/check.py
+      - name: Build install-ready ZIP
+        run: python3 scripts/package.py
+      - name: Upload install-ready Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vanilla-BiS-Tracker-install-ready
+          path: dist/Vanilla-BiS-Tracker-*.zip
+          if-no-files-found: error
+      - name: Publish versioned release (manual opt-in)
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^## Version: *//p' VanillaBiSTracker/VanillaBiSTracker.toc | head -1 | tr -d '\r')
+          test -n "$version"
+          tag="v${version}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists. Published releases are immutable by convention."
+            exit 1
+          fi
+          python3 scripts/release_notes.py
+          gh release create "$tag" dist/Vanilla-BiS-Tracker-"$version".zip \
+            --target "$GITHUB_SHA" --title "Vanilla BiS Tracker $tag" \
+            --notes-file dist/release-notes.md --prerelease
