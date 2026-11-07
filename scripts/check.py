@@ -20,4 +20,9 @@ for path in ADDON.rglob('*.lua'):
     assert not re.search(r'\b(?:goto|continue)\b',content),f'{path}: unsupported keyword'
 items=(ADDON/'data/Recommendations.lua').read_text()
 assert 'VBT.items = {}' in items and 'VBT.recommendations = {}' in items
-print('PASS: TOC load paths, vanilla static API checks, empty unverified database')
+version=re.search(r'^## Version:\\s*(\\S+)',toc,re.M).group(1)
+changelog=(ROOT/'CHANGELOG.md').read_text()
+assert re.search(r'^##\\s+v?' + re.escape(version) + r'\\b',changelog,re.M), 'Missing current release heading'
+core=(ADDON/'Core.lua').read_text()
+assert r')\\ndriver:' not in core and r'\\n  elseif' not in core, 'Literal backslash-n in executable Lua'
+print('PASS: TOC paths, Lua sanity, release heading, vanilla static API checks, empty verified database')
