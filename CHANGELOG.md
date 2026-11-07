@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 — Loading diagnostics
+- Register /bis and /vbt from a minimal bootstrap loaded before the main addon.
+- Add /vbtstatus to distinguish missing installation from a broken addon initialization.
+- Preserve bootstrap state in Core.lua and expose successful initialization status.
+- Document the correct install-ready ZIP folder layout.
+
 ## 0.1.1 — Talent detection and easier downloads
 - Read talent points from original Vanilla 1.12 GetTalentTabInfo third return value.
 - Refresh specialization after talent/spell changes, display auto/manual state, and fix manual spec cycling.
