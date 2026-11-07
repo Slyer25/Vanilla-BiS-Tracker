@@ -1,4 +1,11 @@
-# Changelog\n\n## 0.1.1 — Talent detection and easier downloads\n- Read talent points from original Vanilla 1.12 GetTalentTabInfo third return value.\n- Refresh specialization after talent/spell changes, display auto/manual state, and fix manual spec cycling.\n- Add /bis talents diagnostics.\n- Configure prerelease publication automatically when a new version reaches main.\n
+# Changelog
+
+## 0.1.1 — Talent detection and easier downloads
+- Read talent points from original Vanilla 1.12 GetTalentTabInfo third return value.
+- Refresh specialization after talent/spell changes, display auto/manual state, and fix manual spec cycling.
+- Add /bis talents diagnostics.
+- Configure prerelease publication automatically when a new version reaches main.
+
 
 ## 0.1.0 — Foundation
 - Vanilla 1.12 TOC, slash commands, character/faction/race and talent tree inference.
