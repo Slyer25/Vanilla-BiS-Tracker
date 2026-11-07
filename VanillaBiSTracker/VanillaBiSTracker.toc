@@ -1,0 +1,12 @@
+## Interface: 11200
+## Title: Vanilla BiS Tracker
+## Notes: Phase-aware PvE BiS tracker for original Vanilla WoW 1.12
+## Author: Community project
+## Version: 0.1.0
+## SavedVariables: VBTDB
+## SavedVariablesPerCharacter: VBTCharDB
+
+Core.lua
+data\Phases.lua
+data\Recommendations.lua
+UI.lua
