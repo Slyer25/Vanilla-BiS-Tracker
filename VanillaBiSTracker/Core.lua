@@ -113,7 +113,8 @@ end
 local driver = CreateFrame("Frame")
 driver:RegisterEvent("PLAYER_LOGIN")
 driver:RegisterEvent("PLAYER_ENTERING_WORLD")
-driver:RegisterEvent("CHARACTER_POINTS_CHANGED")\ndriver:RegisterEvent("SPELLS_CHANGED")
+driver:RegisterEvent("CHARACTER_POINTS_CHANGED")
+driver:RegisterEvent("SPELLS_CHANGED")
 driver:SetScript("OnEvent", function()
   if event == "PLAYER_LOGIN" then
     VBT:Initialize()
@@ -135,6 +136,7 @@ SlashCmdList["VBT"] = function(msg)
     local n = tonumber(string.sub(msg, 7))
     if n and n >= 1 and n <= table.getn(VBT.phases) then VBTDB.phase = n; VBT:RefreshUI()
     else VBT:Print("Use /bis phase 1-" .. table.getn(VBT.phases)) end
-  elseif msg == "auto" then VBTCharDB.specOverride = nil; VBT:DetectTalentSpec(); VBT:RefreshUI()\n  elseif msg == "talents" then VBT:PrintTalentDebug(); VBT:RefreshUI()
+  elseif msg == "auto" then VBTCharDB.specOverride = nil; VBT:DetectTalentSpec(); VBT:RefreshUI()
+  elseif msg == "talents" then VBT:PrintTalentDebug(); VBT:RefreshUI()
   else VBT:Print("Commands: /bis, /bis pvp, /bis phase 1-" .. table.getn(VBT.phases) .. ", /bis auto, /bis talents") end
 end
