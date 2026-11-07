@@ -14,6 +14,6 @@ Sources for research: Zockify, WoWisClassic, Wowhead (cross-check with original 
 2. Run `python3 scripts/check.py && python3 scripts/package.py && python3 scripts/release_notes.py`.
 3. Test on an actual 1.12 client and record observations before marking a build tested.
 4. Submit a PR for code/data changes; merge into main after checks.
-5. GitHub Actions creates a **build artifact** on push to main. To publish a prerelease, open Actions -> `Validate and package Vanilla BiS Tracker` -> Run workflow (main) -> enable `publish_release`. The workflow creates `v<TOC version>` with ZIP and changelog notes and rejects reuse of an existing version.
+5. GitHub Actions creates a build artifact on each push to main. When a matching changelog exists and a new TOC version has not yet been released, a push to main also publishes `v<TOC version>` as a **prerelease** with ZIP and changelog. If the version is unchanged, existing releases are left alone. A manual workflow dispatch can also request publication. Do not bump versions without an intentional prerelease. Actual in-game validation must be documented separately.
 
 Do not attach release builds of unsupported data or represent static checks as in-game testing.
