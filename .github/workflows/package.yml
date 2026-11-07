@@ -23,7 +23,7 @@ jobs:
         run: python3 scripts/check.py
       - name: Build install-ready ZIP
         run: python3 scripts/package.py
-      - name: Upload install-ready Actions artifact
+      - name: Verify release notes\n        run: python3 scripts/release_notes.py\n      - name: Upload install-ready Actions artifact
         uses: actions/upload-artifact@v4
         with:
           name: Vanilla-BiS-Tracker-install-ready
@@ -43,7 +43,6 @@ jobs:
             echo "Release $tag already exists; keeping published files immutable."
             exit 0
           fi
-          python3 scripts/release_notes.py
           gh release create "$tag" dist/Vanilla-BiS-Tracker-"$version".zip \
             --target "$GITHUB_SHA" --title "Vanilla BiS Tracker $tag" \
             --notes-file dist/release-notes.md --prerelease
