@@ -1,6 +1,6 @@
-VanillaBiSTracker = {}
+VanillaBiSTracker = VanillaBiSTracker or {}
 local VBT = VanillaBiSTracker
-VBT.version = "0.1.1"
+VBT.version = "0.1.2"
 VBT.phase = 3
 VBT.classes = {
   WARRIOR = {"Arms", "Fury", "Protection"},
@@ -108,6 +108,7 @@ function VBT:Initialize()
   self:DetectCharacter()
   self:BuildUI()
   self:RefreshUI()
+  self.initialized = true
 end
 
 local driver = CreateFrame("Frame")
@@ -126,9 +127,7 @@ driver:SetScript("OnEvent", function()
   end
 end)
 
-SLASH_VBT1 = "/vbt"
-SLASH_VBT2 = "/bis"
-SlashCmdList["VBT"] = function(msg)
+function VBT:HandleCommand(msg)
   msg = string.lower(msg or "")
   if msg == "" or msg == "toggle" then VBT:ToggleUI()
   elseif msg == "pvp" then VBTDB.includePvP = not VBTDB.includePvP; VBT:RefreshUI()
@@ -140,3 +139,4 @@ SlashCmdList["VBT"] = function(msg)
   elseif msg == "talents" then VBT:PrintTalentDebug(); VBT:RefreshUI()
   else VBT:Print("Commands: /bis, /bis pvp, /bis phase 1-" .. table.getn(VBT.phases) .. ", /bis auto, /bis talents") end
 end
+VBT.commandReady = true
