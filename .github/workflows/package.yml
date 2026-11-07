@@ -23,7 +23,9 @@ jobs:
         run: python3 scripts/check.py
       - name: Build install-ready ZIP
         run: python3 scripts/package.py
-      - name: Verify release notes\n        run: python3 scripts/release_notes.py\n      - name: Upload install-ready Actions artifact
+      - name: Verify release notes
+        run: python3 scripts/release_notes.py
+      - name: Upload install-ready Actions artifact
         uses: actions/upload-artifact@v4
         with:
           name: Vanilla-BiS-Tracker-install-ready
