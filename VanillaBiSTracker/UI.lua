@@ -38,15 +38,18 @@ function VBT:BuildUI()
   self.specButton:SetScript("OnClick", function()
     local specs=VBT.classes[VBT.class]
     if not specs then return end
-    local current=VBT:GetSpec()
-    local index=0
-    for i,s in ipairs(specs) do if s==current then index=i end end
-    index=index+1
-    if index>table.getn(specs) then VBTCharDB.specOverride=nil
-    else VBTCharDB.specOverride=specs[index] end
+    local current = VBTCharDB.specOverride
+    if not current then
+      VBTCharDB.specOverride=specs[1]
+    else
+      local index=0
+      for i,s in ipairs(specs) do if s==current then index=i end end
+      if index>=table.getn(specs) then VBTCharDB.specOverride=nil
+      else VBTCharDB.specOverride=specs[index+1] end
+    end
     VBT:RefreshUI()
   end)
-  label(frame, 205, -120, 430, "Click spec to cycle: Auto / talent trees")
+  label(frame, 205, -120, 430, "Click to cycle: Auto, Tree 1, Tree 2, Tree 3")
   self.slotButtons={}
   for i,slot in ipairs(self.slots) do
     local col = math.floor((i-1)/9)
@@ -67,7 +70,7 @@ function VBT:RefreshUI()
   self.info:SetText((self.characterName or "?").." - "..(self.race or "?").." "..(self.class or "?").." ("..(self.faction or "?")..")")
   self.phaseText:SetText("Progression "..p.id..": "..p.name)
   self.pvpButton:SetText(VBTDB.includePvP and "PvP: Included" or "PvP: Excluded")
-  self.specButton:SetText("Spec: "..(self:GetSpec() or "Choose spec"))
+  self.specButton:SetText("Spec: "..(self:GetSpec() or "Unknown")..(VBTCharDB.specOverride and " (manual)" or " (auto)"))
   local recs=self:GetRecommendations(self.selectedSlot)
   local text=self.selectedSlot.."\n\n"
   if not self:GetSpec() then text=text.."Select a specialization first."
