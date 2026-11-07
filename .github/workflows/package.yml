@@ -29,8 +29,8 @@ jobs:
           name: Vanilla-BiS-Tracker-install-ready
           path: dist/Vanilla-BiS-Tracker-*.zip
           if-no-files-found: error
-      - name: Publish versioned release (manual opt-in)
-        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && github.ref == 'refs/heads/main'
+      - name: Publish a new version as GitHub prerelease
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.publish_release && github.ref == 'refs/heads/main')
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -40,8 +40,8 @@ jobs:
           test -n "$version"
           tag="v${version}"
           if gh release view "$tag" >/dev/null 2>&1; then
-            echo "Release $tag already exists. Published releases are immutable by convention."
-            exit 1
+            echo "Release $tag already exists; keeping published files immutable."
+            exit 0
           fi
           python3 scripts/release_notes.py
           gh release create "$tag" dist/Vanilla-BiS-Tracker-"$version".zip \
