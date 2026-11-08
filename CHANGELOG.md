@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.0 — Expanded Combat Rogue and Enhancement Shaman databases
+- Expand the original Vanilla 1.12 candidate item database from 26 to 57 item IDs, with 88 ranked entries across Combat Rogue and Enhancement Shaman.
+- Add Rogue Bloodfang items, raid sword upgrades, rings, pre-raid Shadowcraft alternatives, crafted/dungeon boots, and the MC ranged weapon.
+- Add Shaman chest, waist, boots, bracers, two-handed weapons, Black Dragon Mail set pieces and alternatives.
+- Keep prior candidates available in later progression stages; require PvP toggle for both Don Julio's Band and The Unstoppable Force.
+- Save separately movable main/details window positions per character (no change to item ownership storage).
+- Audit item references and slot compatibility; extend phase, PvP and UI position regression tests.
+- Add the new item ID and source evidence to docs/DATA_SOURCES.md.
+- Data remains a curated shortlist, not a simulated or comprehensive BiS optimizer; historical patch sub-phases need further research.
+
+
 ## 0.3.2 — Independently movable item details
 - Reparent the details window to UIParent so it moves independently of the main tracker.
 - Allow dragging the details frame to a preferred position without moving the main tracker.
