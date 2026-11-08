@@ -55,3 +55,46 @@ Guide comparison:
 - Item links use original item IDs and rely on the game client's item cache for mouseover tooltips. Clicking shows name, ID and source in chat.
 - PvP gear is opt-in and still phase-locked, currently represented by Don Julio's Band.
 - Set synergy and unique-equipped conflicts are documented but not simulated; do not interpret mirrored ring and trinket slots as a valid complete gear set.
+
+## Expanded candidate list (next database release)
+
+The following links record the item ID and source used for the new item records. They use original Classic item entries, NOT reissued Season of Discovery IDs.
+
+| Item ID | Item | UI phase | Source evidence |
+| ---: | --- | ---: | --- |
+| 16908 | Bloodfang Hood | 2 | https://wowclassicdatabase.com/item/bloodfang-hood (Onyxia) |
+| 16909 | Bloodfang Pants | 2 | https://wowclassicdatabase.com/item/bloodfang-pants (Ragnaros) |
+| 16905 | Bloodfang Chestpiece | 4 | https://wowclassicdatabase.com/item/bloodfang-chestpiece (Nefarian) |
+| 16906 | Bloodfang Boots | 4 | https://wowclassicdatabase.com/item/bloodfang-boots (Broodlord Lashlayer) |
+| 16910 | Bloodfang Belt | 4 | https://wowclassicdatabase.com/item/bloodfang-belt (Vaelastrasz) |
+| 16911 | Bloodfang Bracers | 4 | https://wowclassicdatabase.com/item/bloodfang-bracers (Razorgore) |
+| 17075 | Vis'kag the Bloodletter | 2 | https://wowclassicdatabase.com/item/viskag-the-bloodletter (Onyxia) |
+| 18832 | Brutality Blade | 2 | https://wowclassicdatabase.com/item/brutality-blade (Garr) |
+| 19352 | Chromatically Tempered Sword | 4 | https://wowclassicdatabase.com/item/chromatically-tempered-sword (Chromaggus) |
+| 19351 | Maladath | 4 | https://wowclassicdatabase.com/item/maladath-runed-blade-of-the-black-flight (Broodlord) |
+| 17063 | Band of Accuria | 2 | https://wowclassicdatabase.com/item/band-of-accuria (Ragnaros) |
+| 11726 | Savage Gladiator Chain | 1 | https://wowclassicdatabase.com/item/savage-gladiator-chain (Gorosh) |
+| 15050 | Black Dragonscale Breastplate | 1 | https://wowclassicdatabase.com/item/black-dragonscale-breastplate |
+| 15052 | Black Dragonscale Leggings | 1 | https://wowclassicdatabase.com/item/black-dragonscale-leggings |
+| 16984 | Black Dragonscale Boots | 2 | https://wowclassicdatabase.com/item/black-dragonscale-boots (requires Molten Core crafting materials) |
+| 18393 | Warpwood Binding | 3 | https://wowclassicdatabase.com/item/warpwood-binding (Dire Maul) |
+| 19146 | Wristguards of Stability | 2 | https://wowclassicdatabase.com/item/wristguards-of-stability (Molten Core) |
+| 19323 | The Unstoppable Force | 3, PvP | https://wowclassicdatabase.com/item/the-unstoppable-force (Alterac Valley Exalted) |
+| 12784 | Arcanite Reaper | 1 | https://wowclassicdatabase.com/item/arcanite-reaper |
+| 18374 | Flamescarred Shoulders | 3 | https://wowclassicdatabase.com/item/flamescarred-shoulders (Dire Maul) |
+| 14616 | Bloodmail Boots | 1 | https://wowclassicdatabase.com/item/bloodmail-boots |
+| 12553 | Swiftwalker Boots | 1 | https://wowclassicdatabase.com/item/swiftwalker-boots |
+| 18506 | Mongoose Boots | 1 | https://wowclassicdatabase.com/item/mongoose-boots |
+| 16710 | Shadowcraft Bracers | 1 | https://wowclassicdatabase.com/item/shadowcraft-bracers |
+| 16711 | Shadowcraft Boots | 1 | https://wowclassicdatabase.com/item/shadowcraft-boots |
+| 16708 | Shadowcraft Spaulders | 1 | https://wowclassicdatabase.com/item/shadowcraft-spaulders |
+| 16721 | Shadowcraft Tunic | 1 | https://wowclassicdatabase.com/item/shadowcraft-tunic |
+| 17069 | Striker's Mark | 2 | https://wowclassicdatabase.com/item/strikers-mark |
+| 12651 | Blackcrow | 1 | https://wowclassicdatabase.com/item/blackcrow |
+| 16713 | Shadowcraft Belt | 1 | https://wowclassicdatabase.com/item/shadowcraft-belt |
+| 16709 | Shadowcraft Pants | 1 | https://wowclassicdatabase.com/item/shadowcraft-pants |
+
+**Progression caveat:** these are original item ID/source references and **candidate** recommendations. The addon still groups historical unlocks into seven selectable stages, not exact original 2005–06 patch boundaries. Some original dungeon drop tables changed with patch 1.10; an item's final 1.12 stats do not establish its earliest source availability. Blizzard's original Classic content/itemization plan documents those distinctions: https://www.bluetracker.gg/wow/topic/us-en/120346-classic-content-plan/
+
+**Build caveat:** Combat Rogue is currently primarily a sword-build shortlist; dagger builds require a separate weapon-subtype distinction even within the Combat talent tree. Enhancement Shaman two-handed axes/maces require the appropriate Enhancement talent. The Black Dragon Mail and Devilsaur bonuses depend on equipping multiple pieces, so numerical ranks are **screening order, not a simulated overall optimal gear set**. PvP reputation rewards are governed by both the PvP toggle and the minimum available stage.
+
