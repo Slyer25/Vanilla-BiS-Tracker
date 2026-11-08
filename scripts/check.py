@@ -30,5 +30,7 @@ assert 'SLASH_VBT1' in bootstrap and 'SLASH_VBT2' in bootstrap and 'SLASH_VBTSTA
 assert 'commandReady' in bootstrap
 core=(ADDON/'Core.lua').read_text()
 assert 'function VBT:HandleCommand' in core and 'VBT.commandReady = true' in core
+assert 'VBT:DetectCharacter(); VBT:ToggleUI()' in core, 'Missing talent refresh when opening UI'
+assert 'if total == 0 then return end' in core, 'Missing protection against unavailable talent data'
 assert r')\\ndriver:' not in core and r'\\n  elseif' not in core, 'Literal backslash-n in executable Lua'
 print('PASS: TOC paths, Lua sanity, release heading, vanilla static API checks, empty verified database')
