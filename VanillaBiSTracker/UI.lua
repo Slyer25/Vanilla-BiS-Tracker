@@ -85,7 +85,7 @@ function VBT:BuildUI()
     b:SetScript("OnClick",function()
       local entry=VBT.detailItems[slotIndex]
       if entry then
-        VBT:Print(entry.name .. " [" .. entry.id .. "] - " .. (entry.source or "Unknown") ..
+        VBT:Print(entry.name .. " [" .. entry.id .. "] - " .. (entry.itemSource or "Unknown") ..
         (entry.boss and (", " .. entry.boss) or ""))
       end
     end)
