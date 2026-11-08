@@ -19,6 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Lua parser for syntax checks
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1
+      - name: Compile Lua source syntax
+        run: find VanillaBiSTracker -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+      - name: Test progression and eligibility
+        run: lua5.1 scripts/test_data.lua
       - name: Static Vanilla 1.12 checks
         run: python3 scripts/check.py
       - name: Build install-ready ZIP
