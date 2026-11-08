@@ -66,6 +66,11 @@ function VBT:BuildUI()
   detailFrame:SetWidth(490); detailFrame:SetHeight(265)
   detailFrame:SetPoint("CENTER", UIParent, "CENTER", 160, 0)
   detailFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+  detailFrame:EnableMouse(true)
+  detailFrame:SetMovable(true)
+  detailFrame:RegisterForDrag("LeftButton")
+  detailFrame:SetScript("OnDragStart", function() this:StartMoving() end)
+  detailFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
   detailFrame:SetBackdrop({
     bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
     edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
