@@ -1,6 +1,6 @@
 VanillaBiSTracker = VanillaBiSTracker or {}
 local VBT = VanillaBiSTracker
-VBT.version = "0.1.2"
+VBT.version = "0.1.3"
 VBT.phase = 3
 VBT.classes = {
   WARRIOR = {"Arms", "Fury", "Protection"},
@@ -48,8 +48,10 @@ function VBT:DetectTalentSpec()
     end
   end
   self.talentTrees = trees
+  -- Preserve the last valid reading if the client temporarily exposes no talents.
+  if total == 0 then return end
   self.detectedSpec = nil
-  if total > 0 and not tied and self.class and self.classes[self.class] then
+  if not tied and self.class and self.classes[self.class] then
     self.detectedSpec = self.classes[self.class][bestIndex]
   end
 end
@@ -129,7 +131,7 @@ end)
 
 function VBT:HandleCommand(msg)
   msg = string.lower(msg or "")
-  if msg == "" or msg == "toggle" then VBT:ToggleUI()
+  if msg == "" or msg == "toggle" then VBT:DetectCharacter(); VBT:ToggleUI()
   elseif msg == "pvp" then VBTDB.includePvP = not VBTDB.includePvP; VBT:RefreshUI()
   elseif string.sub(msg, 1, 6) == "phase " then
     local n = tonumber(string.sub(msg, 7))
