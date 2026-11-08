@@ -70,9 +70,9 @@ function VBT:BuildUI()
     local b=button(frame, 270, 25, 343, y, "")
     local sourceText=label(frame, 346, y-28, 277, "")
     sourceText:SetHeight(42)
-    local itemId = nil
+    local slotIndex = i
     b:SetScript("OnEnter",function()
-      local entry = VBT.detailItems[i]
+      local entry = VBT.detailItems[slotIndex]
       if entry and entry.id and GameTooltip then
         GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
         local ok = pcall(function()
@@ -83,7 +83,7 @@ function VBT:BuildUI()
     end)
     b:SetScript("OnLeave",function() if GameTooltip then GameTooltip:Hide() end end)
     b:SetScript("OnClick",function()
-      local entry=VBT.detailItems[i]
+      local entry=VBT.detailItems[slotIndex]
       if entry then
         VBT:Print(entry.name .. " [" .. entry.id .. "] - " .. (entry.source or "Unknown") ..
         (entry.boss and (", " .. entry.boss) or ""))
