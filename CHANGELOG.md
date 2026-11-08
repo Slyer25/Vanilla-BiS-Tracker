@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 — First curated gear candidates and progression filtering
+- Add 26 cross-checked original Vanilla item IDs with dungeon/crafted/MC/Onyxia/Dire Maul/PvP/BWL sources.
+- First partial Combat Rogue and Enhancement Shaman PvE shortlists; PvP remains opt-in and phase-gated.
+- Preserve earlier candidates in later phases and exclude future-phase items.
+- Add paged item candidates, source notes, hover tooltips and improved opaque background.
+- Add cited item source inventory and clear warning that a shortlist is not a fully simulated BiS set.
+- Add executable Lua data regression tests and Lua syntax compilation to GitHub Actions.
+
+
 ## 0.1.3 — Specialization refresh on open
 - Re-read the player talent-tree points whenever /bis or /vbt opens the window.
 - Preserve the last valid detected specialization if the 1.12 client temporarily returns zero talent points.
