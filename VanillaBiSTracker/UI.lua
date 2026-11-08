@@ -21,6 +21,9 @@ function VBT:BuildUI()
   frame:EnableMouse(true); frame:SetMovable(true); frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function() this:StartMoving() end)
   frame:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
+  local shade = frame:CreateTexture(nil, "BACKGROUND")
+  shade:SetAllPoints(frame)
+  shade:SetTexture(0, 0, 0, 0.88)
   frame:Hide()
   self.frame=frame
   label(frame, 20, -18, 490, "Vanilla BiS Tracker  |  original 1.12")
@@ -56,13 +59,49 @@ function VBT:BuildUI()
     local row = math.mod(i-1,9)
     local b=button(frame, 142, 25, 20+col*153, -151-row*32, slot)
     local selected=slot
-    b:SetScript("OnClick",function() VBT.selectedSlot=selected; VBT:RefreshUI() end)
+    b:SetScript("OnClick",function() VBT.selectedSlot=selected; VBT.detailPage=1; VBT:RefreshUI() end)
     self.slotButtons[i]=b
   end
-  self.details=label(frame, 341, -155, 288, "")
-  self.details:SetJustifyV("TOP")
-  self.details:SetHeight(295)
+  self.detailsTitle=label(frame, 343, -155, 287, "")
+  self.detailsCount=label(frame, 343, -178, 287, "")
+  self.detailItems={}
+  for i=1,3 do
+    local y = -205-(i-1)*82
+    local b=button(frame, 270, 25, 343, y, "")
+    local sourceText=label(frame, 346, y-28, 277, "")
+    sourceText:SetHeight(42)
+    local itemId = nil
+    b:SetScript("OnEnter",function()
+      local entry = VBT.detailItems[i]
+      if entry and entry.id and GameTooltip then
+        GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
+        local ok = pcall(function()
+          GameTooltip:SetHyperlink("item:" .. entry.id .. ":0:0:0")
+        end)
+        if ok then GameTooltip:Show() else GameTooltip:Hide() end
+      end
+    end)
+    b:SetScript("OnLeave",function() if GameTooltip then GameTooltip:Hide() end end)
+    b:SetScript("OnClick",function()
+      local entry=VBT.detailItems[i]
+      if entry then
+        VBT:Print(entry.name .. " [" .. entry.id .. "] - " .. (entry.source or "Unknown") ..
+        (entry.boss and (", " .. entry.boss) or ""))
+      end
+    end)
+    self.detailItems[i]={button=b,source=sourceText}
+  end
+  self.detailsPrev=button(frame, 32, 22, 351, -450, "<")
+  self.detailsPrev:SetScript("OnClick",function()
+    VBT.detailPage=math.max(1,(VBT.detailPage or 1)-1); VBT:RefreshUI()
+  end)
+  self.detailsNext=button(frame, 32, 22, 583, -450, ">")
+  self.detailsNext:SetScript("OnClick",function()
+    VBT.detailPage=(VBT.detailPage or 1)+1; VBT:RefreshUI()
+  end)
+  self.detailsPage=label(frame, 395, -453, 180, "")
   self.selectedSlot="Head"
+  self.detailPage=1
 end
 function VBT:RefreshUI()
   if not self.frame or not VBTDB then return end
@@ -72,16 +111,39 @@ function VBT:RefreshUI()
   self.pvpButton:SetText(VBTDB.includePvP and "PvP: Included" or "PvP: Excluded")
   self.specButton:SetText("Spec: "..(self:GetSpec() or "Unknown")..(VBTCharDB.specOverride and " (manual)" or " (auto)"))
   local recs=self:GetRecommendations(self.selectedSlot)
-  local text=self.selectedSlot.."\n\n"
-  if not self:GetSpec() then text=text.."Select a specialization first."
-  elseif table.getn(recs)==0 then text=text.."No verified recommendations loaded for this slot and phase."
+  local total=table.getn(recs)
+  local pages=math.max(1,math.ceil(total/3))
+  if not self.detailPage or self.detailPage>pages then self.detailPage=1 end
+  self.detailsTitle:SetText(self.selectedSlot .. " - candidate gear")
+  if not self:GetSpec() then
+    self.detailsCount:SetText("Choose a specialization first.")
+  elseif total == 0 then
+    self.detailsCount:SetText("No curated recommendations for this slot.")
   else
-    for i,entry in ipairs(recs) do
-      local item=entry.item
-      text=text..tostring(entry.rank)..". "..item.name.."\n"..(item.source or "Unknown source").."\n\n"
+    self.detailsCount:SetText(total .. " eligible candidate(s) - hover for tooltip")
+  end
+  for i, row in ipairs(self.detailItems) do
+    local entry=recs[(self.detailPage-1)*3+i]
+    if entry then
+      row.id=entry.item.id
+      row.name=entry.item.name
+      row.source=entry.item.source
+      row.boss=entry.item.boss
+      row.button:SetText(((self.detailPage-1)*3+i) .. ". " .. entry.item.name)
+      row.button:Show()
+      row.source:SetText((entry.item.source or "Unknown source") ..
+        (entry.item.boss and (" - " .. entry.item.boss) or "") ..
+        (entry.note and ("\n" .. entry.note) or ""))
+      row.source:Show()
+    else
+      row.id=nil
+      row.button:Hide()
+      row.source:Hide()
     end
   end
-  self.details:SetText(text)
+  self.detailsPage:SetText("Page " .. self.detailPage .. " / " .. pages)
+  if self.detailPage>1 then self.detailsPrev:Show() else self.detailsPrev:Hide() end
+  if self.detailPage<pages then self.detailsNext:Show() else self.detailsNext:Hide() end
 end
 function VBT:ToggleUI()
   if not self.frame then self:Print("Not initialized yet."); return end
