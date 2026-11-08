@@ -45,8 +45,21 @@ for key, inner, name, slot, stage, source in item_rows:
 recs = re.findall(r"\{id=(\d+),rank=(\d+)", data)
 assert recs
 assert all(int(item_id) in phase and int(rank) >= 1 for item_id, rank in recs), "Bad recommendation reference"
+# Each displayed recommendation must target the matching equipment slot.
+# Ring/Trinket recommendations reuse the same item type in two UI slots.
+slot_blocks = re.findall(r'^    \["([^"]+)"\]=(\{\{[^\n]+)', data, re.M)
+assert len(slot_blocks) >= 25, "Missing class/spec slot recommendations"
+for display_slot, line in slot_blocks:
+    accepted = display_slot
+    if display_slot.startswith("Ring "): accepted="Finger"
+    if display_slot.startswith("Trinket "): accepted="Trinket"
+    for rec_id in re.findall(r'\{id=(\d+),rank=', line):
+        assert slot_by_id[int(rec_id)] == accepted, (
+            display_slot, rec_id, slot_by_id[int(rec_id)])
+assert len(item_rows) >= 55, "Expanded dataset missing"
 assert "pvp=true" in data, "PvP filtering lacks any example item"
+assert re.search(r'\[19323\].*pvp=true',data), "Alterac Valley weapon must require PvP toggle"
 assert "SLASH_VBTSTATUS1" in (ADDON / "Bootstrap.lua").read_text()
 core = (ADDON / "Core.lua").read_text()
 assert "VBT:DetectCharacter(); VBT:ToggleUI()" in core, "Lost tested auto-spec refresh"
-print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations")
+print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations, slot compatibility")
