@@ -3,7 +3,7 @@
 SlashCmdList={}
 local function widget()
   local w={}
-  local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing","RegisterForClicks","SetBackdropColor","SetBackdropBorderColor","SetFrameLevel"}
+  local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing","RegisterForClicks","SetBackdropColor","SetBackdropBorderColor","SetFrameLevel","ClearAllPoints"}
   for _, name in ipairs(methods) do
     w[name]=function(self,value,callback)
       if name=="SetText" then
@@ -22,6 +22,10 @@ local function widget()
   w.IsVisible=function(self) return self.visible end
   w.RegisterEvent=function() end
   w.GetFrameLevel=function() return 1 end
+  w.GetCenter=function(self)
+    if self==UIParent then return 500,400 end
+    return 590,455
+  end
   return w
 end
 UIParent=widget()
@@ -54,6 +58,11 @@ local v=VanillaBiSTracker
 v:Initialize()
 assert(v:GetSpec()=="Combat")
 assert(v.detailFrame.parent==UIParent,"Detail frame must be independent of main window")
+v:SaveWindowPosition("main",v.frame)
+v:SaveWindowPosition("details",v.detailFrame)
+assert(VBTCharDB.windowPositions.main.x==90 and VBTCharDB.windowPositions.details.y==55,
+  "Window center offsets were not saved")
+v:RestoreWindowPosition("details",v.detailFrame,160,0)
 assert(v.detailFrame.parent~=v.frame,"Detail frame must not be child of main tracker")
 assert(v.detailFrame.scripts.OnDragStart and v.detailFrame.scripts.OnDragStop,
   "Details window must support dragging")
