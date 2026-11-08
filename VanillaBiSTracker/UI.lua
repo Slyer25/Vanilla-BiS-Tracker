@@ -11,6 +11,27 @@ local function label(parent, x, y, width, text)
   f:SetWidth(width); f:SetJustifyH("LEFT"); f:SetText(text)
   return f
 end
+-- Frame positions are per-character and independent. Center offsets survive UI reloads.
+-- Center anchors are used instead of screen edges so reopening is predictable.
+function VBT:SaveWindowPosition(key, frame)
+  if not VBTCharDB or not frame or not frame.GetCenter then return end
+  local x,y=frame:GetCenter()
+  local ux,uy=UIParent:GetCenter()
+  if not x or not y or not ux or not uy then return end
+  if type(VBTCharDB.windowPositions) ~= "table" then
+    VBTCharDB.windowPositions={}
+  end
+  VBTCharDB.windowPositions[key]={x=x-ux,y=y-uy}
+end
+
+function VBT:RestoreWindowPosition(key, frame, defaultX, defaultY)
+  local pos=VBTCharDB and VBTCharDB.windowPositions and VBTCharDB.windowPositions[key]
+  if pos and type(pos.x)=="number" and type(pos.y)=="number" then
+    frame:ClearAllPoints()
+    frame:SetPoint("CENTER",UIParent,"CENTER",pos.x,pos.y)
+  end
+end
+
 function VBT:BuildUI()
   if self.frame then return end
   local frame = CreateFrame("Frame", "VanillaBiSTrackerFrame", UIParent)
@@ -20,7 +41,11 @@ function VBT:BuildUI()
   frame:SetBackdrop({bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", tile=true, tileSize=32, edgeSize=32, insets={left=11,right=12,top=12,bottom=11}})
   frame:EnableMouse(true); frame:SetMovable(true); frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function() this:StartMoving() end)
-  frame:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
+  frame:SetScript("OnDragStop", function()
+    this:StopMovingOrSizing()
+    VBT:SaveWindowPosition("main", this)
+  end)
+  VBT:RestoreWindowPosition("main", frame, 0, 0)
   -- Tint the actual backdrop rather than overlaying a separate large black texture.
   frame:SetBackdropColor(0.04, 0.04, 0.06, 0.94)
   frame:Hide()
@@ -70,7 +95,11 @@ function VBT:BuildUI()
   detailFrame:SetMovable(true)
   detailFrame:RegisterForDrag("LeftButton")
   detailFrame:SetScript("OnDragStart", function() this:StartMoving() end)
-  detailFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
+  detailFrame:SetScript("OnDragStop", function()
+    this:StopMovingOrSizing()
+    VBT:SaveWindowPosition("details", this)
+  end)
+  VBT:RestoreWindowPosition("details", detailFrame, 160, 0)
   detailFrame:SetBackdrop({
     bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
     edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
