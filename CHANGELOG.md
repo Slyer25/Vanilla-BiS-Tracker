@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 — Frame and item-detail visual cleanup
+- Remove the extra black background texture covering the main addon frame; tint the frame backdrop directly.
+- Correct the details panel backdrop texture paths, and use a dark opaque tooltip-style background and clearly visible border.
+- Raise detail panel above the main content while preserving Back and obtained tracking.
+- Extend the mocked UI checks for backdrop methods and regressions.
+
+
 ## 0.3.0 — Interactive item details and obtained tracking
 - Left-click a recommendation to open an in-addon acquisition panel with source, boss/requisite, earliest phase, notes and current obtained status.
 - Right-click an item to mark it obtained or missing without removing it from the list.
