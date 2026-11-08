@@ -2,10 +2,10 @@
 
 **v0.3.2 hotfix prerelease — v0.1.3 character detection was verified in-game; v0.2.1 item display, phase/PvP gating, and tooltips were confirmed in-game; v0.3.0 item details, obtained tracking, and tooltips were validated in-game; v0.3.1 visual changes were reviewed in-game; movable details in v0.3.2 await testing.** Independent from MTSL Zone Hunter.
 
-A fully offline, original Vanilla 1.12 gear recommendation addon. Intended to use progressive content availability with final patch 1.12 item stats. v0.3.2 introduces a **partial, curated candidate list** for Combat Rogue and Enhancement Shaman (26 checked original Vanilla item IDs). It is not a complete BiS guide or an automatic gear optimizer. Recommendations use the final 1.12 items and progressive unlock stages; other class/spec slots remain unpopulated.
+A fully offline, original Vanilla 1.12 gear recommendation addon. Intended to use progressive content availability with final patch 1.12 item stats. v0.4.0 includes a **partial, curated candidate list** for Combat Rogue and Enhancement Shaman (57 original Vanilla item IDs, 88 candidate references). It is not a complete BiS guide or an automatic gear optimizer. Recommendations use the final 1.12 items and progressive unlock stages; other class/spec slots remain unpopulated.
 
 ## Important: correct installation layout
-Download **Vanilla-BiS-Tracker-0.3.2.zip** from the release's **Assets** section. Do not use GitHub's automatically generated *Source code (zip)* file as an installable addon. If using an Actions artifact, it is wrapped in an outer ZIP: open it and extract the *inner* `Vanilla-BiS-Tracker-0.3.2.zip`.
+Download **Vanilla-BiS-Tracker-0.4.0.zip** from the release's **Assets** section. Do not use GitHub's automatically generated *Source code (zip)* file as an installable addon. If using an Actions artifact, it is wrapped in an outer ZIP: open it and extract the *inner* `Vanilla-BiS-Tracker-0.4.0.zip`.
 
 The directory must be exactly:
 
@@ -22,6 +22,15 @@ If `/bis` and `/vbt` do nothing, confirm *Vanilla BiS Tracker* is enabled in the
 ## Test feedback
 A Rogue test on original Vanilla 1.12 confirmed `/bis talents` correctly reads Assassination 16 / Combat 32 / Subtlety 3 and selects Combat; the initial UI opening had shown Unknown. In 0.3.2, the default UI command refreshes character/talent information before showing the window. Retest automatic selection after login without issuing `/bis talents` first.
 
+## v0.4.0 database and position test
+1. On a Combat Rogue choose Pre-Raid and inspect Wrists (Shadowcraft), Feet (Mongoose/Swiftwalker/Shadowcraft), and Ranged (Blackcrow). At MC/Onyxia inspect Head (Bloodfang Hood), Rings (Band of Accuria), and Main Hand (Vis'kag). At BWL inspect the Chromatically Tempered Sword, Maladath, and Bloodfang chest/bracers/belt/boots.
+2. On an Enhancement Shaman choose Pre-Raid and inspect Chest (Savage Gladiator Chain, Black Dragonscale), Legs (Black Dragonscale), and Feet (Bloodmail Boots). After Dire Maul inspect Warpwood Binding and Treant's Bane.
+3. With PvP excluded, The Unstoppable Force and Don Julio's Band must be absent; enabling PvP at the Dire Maul stage should show both on the appropriate slots.
+4. Drag the main window and details window to separate positions, reload the UI, and verify both positions persist. Verify the character-specific obtained flags are unchanged.
+5. Report a tooltip showing a different item ID, incorrect source, or a missing historical item unlock; sources are documented in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
+
+**Data limitations:** ranking order is a curated set of candidates and may not be the optimal full equipment combination. Rogue Combat uses mostly a sword build and is not yet distinguished from dagger Combat. Shaman 2H weapon candidates require the matching talent. Item sources and the UI progression phases are not equivalent to historically exact patch-by-patch itemization.
+
 ## Installation
 Download the **install-ready** ZIP from GitHub Actions (`Vanilla-BiS-Tracker-install-ready` artifact), or from a published prerelease, extract its `VanillaBiSTracker/` directory directly into `Interface/AddOns/`, then enable it at the character selection screen. The original 1.12 client is the target (TOC `11200`).
 
@@ -32,7 +41,7 @@ Commands: `/vbtstatus` for loading diagnostics; `/bis` or `/vbt` to toggle; `/bi
 - Phase order: pre-raid launch; MC/Onyxia; Dire Maul and world bosses; BWL; ZG; AQ; Naxx. Sub-patch content, Battleground releases, PvP Rank rewards, quests, and reputations require a more granular schedule before data import.
 - Talent specialization is inferred from points spent per tree, not an official 1.12 specialization API. Hybrid builds may require a manual selection.
 - Item clicks currently print the item name, ID, and acquisition source in chat; they do NOT mark it obtained.\n- The initial curated list is deliberately incomplete. Gear candidates, source notes, item tooltips and pagination are implemented. Bag/equipped detection, unique-equipped conflict handling and simmed/set-aware optimization are future work. See [item sources](docs/DATA_SOURCES.md).
-- Automated static checks, Lua syntax compilation and a mocked Lua data-filter test run in GitHub Actions; manual in-game checks remain mandatory.
+- Automated static checks, Lua syntax compilation, mock UI testing and phase/PvP data-filter tests run in GitHub Actions; manual in-game checks remain mandatory.
 
 ## Developer build
 `python3 scripts/check.py && lua5.1 scripts/test_data.lua && python3 scripts/package.py && python3 scripts/release_notes.py`
