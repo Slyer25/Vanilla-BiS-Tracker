@@ -54,7 +54,7 @@ VBT.items = {
   [16823]={id=16823,name="Nightslayer Shoulder Pads",slot="Shoulders",phase=2,source="Molten Core",boss="Sulfuron Harbinger",class="ROGUE"},
   [16820]={id=16820,name="Nightslayer Chestpiece",slot="Chest",phase=2,source="Molten Core",boss="Golemagg the Incinerator",class="ROGUE"},
   [18404]={id=18404,name="Onyxia Tooth Pendant",slot="Neck",phase=2,source="Onyxia",boss="Head of Onyxia quest reward"},
-  [18812]={id=18812,name="Wristguards of True Flight",slot="Wrists",phase=2,source="Molten Core",boss="Molten Core trash"},
+  [18812]={id=18812,name="Wristguards of True Flight",slot="Wrists",phase=2,source="Molten Core",boss="Majordomo Executus cache"},
   [18817]={id=18817,name="Crown of Destruction",slot="Head",phase=2,source="Molten Core",boss="Ragnaros"},
   [18500]={id=18500,name="Tarnished Elven Ring",slot="Finger",phase=3,source="Dire Maul North",boss="Gordok Tribute"},
   [18538]={id=18538,name="Treant's Bane",slot="Main Hand",phase=3,source="Dire Maul North",boss="Gordok Tribute; two-handed axe"},
