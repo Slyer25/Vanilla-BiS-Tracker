@@ -27,7 +27,7 @@ function VBT:BuildUI()
   self.frame=frame
   label(frame, 20, -18, 490, "Vanilla BiS Tracker  |  original 1.12")
   local close=button(frame, 65, 22, 561, -15, "Close")
-  close:SetScript("OnClick", function() frame:Hide() end)
+  close:SetScript("OnClick", function() VBT:CloseUI() end)
   self.info=label(frame, 20, -53, 610, "")
   local prev=button(frame, 20, 22, 20, -82, "<")
   prev:SetScript("OnClick",function() VBTDB.phase = math.max(1, VBTDB.phase - 1); VBT:RefreshUI() end)
@@ -61,10 +61,10 @@ function VBT:BuildUI()
     b:SetScript("OnClick",function() VBT.selectedSlot=selected; VBT.detailPage=1; VBT:RefreshUI() end)
     self.slotButtons[i]=b
   end
-  -- An in-addon detail overlay keeps acquisition information readable without chat spam.
-  local detailFrame=CreateFrame("Frame", nil, frame)
+  -- An independent, draggable window: it is parented to UIParent, not to the tracker.
+  local detailFrame=CreateFrame("Frame", "VanillaBiSTrackerDetailFrame", UIParent)
   detailFrame:SetWidth(490); detailFrame:SetHeight(265)
-  detailFrame:SetPoint("CENTER", frame, "CENTER", 0, 0)
+  detailFrame:SetPoint("CENTER", UIParent, "CENTER", 160, 0)
   detailFrame:SetFrameStrata("FULLSCREEN_DIALOG")
   detailFrame:SetBackdrop({
     bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
@@ -75,12 +75,18 @@ function VBT:BuildUI()
   detailFrame:SetBackdropColor(0.08,0.08,0.11,0.99)
   detailFrame:SetBackdropBorderColor(0.65,0.58,0.38,1)
   detailFrame:SetFrameLevel(frame:GetFrameLevel()+15)
+  -- Solid inset fill prevents bleed-through, while preserving the tooltip border.
+  local detailFill=detailFrame:CreateTexture(nil, "BACKGROUND")
+  detailFill:SetPoint("TOPLEFT", detailFrame, "TOPLEFT", 8, -8)
+  detailFill:SetPoint("BOTTOMRIGHT", detailFrame, "BOTTOMRIGHT", -8, 8)
+  detailFill:SetTexture(0.055, 0.055, 0.075, 0.98)
   self.detailFrame=detailFrame
   self.detailName=label(detailFrame, 25, -24, 395, "")
+  label(detailFrame, 25, -52, 320, "Drag this panel to move it")
   self.detailSource=label(detailFrame, 25, -76, 440, "")
   self.detailSource:SetHeight(105)
   self.detailOwned=label(detailFrame, 25, -195, 435, "")
-  local detailClose=button(detailFrame, 80, 23, 382, -20, "Back")
+  local detailClose=button(detailFrame, 80, 23, 382, -20, "Close")
   detailClose:SetScript("OnClick",function() detailFrame:Hide() end)
   local obtainedButton=button(detailFrame, 195, 24, 25, -226, "Toggle obtained")
   obtainedButton:SetScript("OnClick",function()
@@ -185,9 +191,18 @@ function VBT:RefreshUI()
   if self.detailPage>1 then self.detailsPrev:Show() else self.detailsPrev:Hide() end
   if self.detailPage<pages then self.detailsNext:Show() else self.detailsNext:Hide() end
 end
+function VBT:CloseUI()
+  if self.detailFrame then self.detailFrame:Hide() end
+  if self.frame then self.frame:Hide() end
+end
 function VBT:ToggleUI()
   if not self.frame then self:Print("Not initialized yet."); return end
-  if self.frame:IsVisible() then self.frame:Hide() else self:RefreshUI(); self.frame:Show() end
+  if self.frame:IsVisible() then
+    self:CloseUI()
+  else
+    self:RefreshUI()
+    self.frame:Show()
+  end
 end
 
 function VBT:RefreshItemDetails()
