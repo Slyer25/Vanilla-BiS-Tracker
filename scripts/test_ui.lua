@@ -10,7 +10,8 @@ local function widget()
         assert(type(self)=="table", "SetText invoked on non-widget")
         self.text=value
       elseif name=="SetScript" then
-        self.scripts=self.scripts or {}\n        self.scripts[value]=callback
+        self.scripts=self.scripts or {}
+        self.scripts[value]=callback
       end
     end
   end
@@ -35,7 +36,8 @@ function UnitRace() return "Night Elf","NIGHTELF" end
 function UnitFactionGroup() return "Alliance" end
 function UnitName() return "TestRogue" end
 function GetRealmName() return "Test" end
-local chatMessages={}\nDEFAULT_CHAT_FRAME={AddMessage=function(self,msg) table.insert(chatMessages,msg) end}
+local chatMessages={}
+DEFAULT_CHAT_FRAME={AddMessage=function(self,msg) table.insert(chatMessages,msg) end}
 VBTDB={phase=1, includePvP=false}
 VBTCharDB={}
 dofile("VanillaBiSTracker/Bootstrap.lua")
@@ -47,7 +49,10 @@ local v=VanillaBiSTracker
 v:Initialize()
 assert(v:GetSpec()=="Combat")
 assert(v.detailItems[1].source.text:find("Stratholme"),"Initial source missing")
-assert(v.detailItems[1].itemSource=="Stratholme")\nassert(v.detailItems[1].button.scripts.OnClick, "Missing click handler")\nv.detailItems[1].button.scripts.OnClick()\nassert(chatMessages[1] and string.find(chatMessages[1],"Stratholme",1,true), "Click did not print item acquisition source")
+assert(v.detailItems[1].itemSource=="Stratholme")
+assert(v.detailItems[1].button.scripts.OnClick, "Missing click handler")
+v.detailItems[1].button.scripts.OnClick()
+assert(chatMessages[1] and string.find(chatMessages[1],"Stratholme",1,true), "Click did not print item acquisition source")
 for phase=1,7 do
   VBTDB.phase=phase
   for _, slot in ipairs(v.slots) do
@@ -57,6 +62,11 @@ for phase=1,7 do
     for _, row in ipairs(v.detailItems) do
       assert(type(row.source)=="table" and type(row.source.SetText)=="function",
         "Source widget overwritten in "..slot)
+      if row.id then
+        local before=table.getn(chatMessages)
+        row.button.scripts.OnClick()
+        assert(table.getn(chatMessages)==before+1, "Item click failed in "..slot)
+      end
     end
   end
 end
