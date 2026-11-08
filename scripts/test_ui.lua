@@ -3,7 +3,7 @@
 SlashCmdList={}
 local function widget()
   local w={}
-  local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing"}
+  local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing","RegisterForClicks"}
   for _, name in ipairs(methods) do
     w[name]=function(self,value,callback)
       if name=="SetText" then
@@ -50,9 +50,22 @@ v:Initialize()
 assert(v:GetSpec()=="Combat")
 assert(v.detailItems[1].source.text:find("Stratholme"),"Initial source missing")
 assert(v.detailItems[1].itemSource=="Stratholme")
-assert(v.detailItems[1].button.scripts.OnClick, "Missing click handler")
+assert(v.detailItems[1].button.scripts.OnClick, "Missing item click")
+arg1="LeftButton"
 v.detailItems[1].button.scripts.OnClick()
-assert(chatMessages[1] and string.find(chatMessages[1],"Stratholme",1,true), "Click did not print item acquisition source")
+assert(v.detailFrame.visible, "Left-click did not show details")
+assert(string.find(v.detailSource.text,"Stratholme",1,true), "Acquisition source missing")
+assert(not v:IsObtained(13404), "Item should initially be missing")
+arg1="RightButton"
+v.detailItems[1].button.scripts.OnClick()
+assert(v:IsObtained(13404), "Right-click did not mark obtained")
+assert(VBTCharDB.obtainedItems["13404"] == true, "Per-character persistence missing")
+assert(string.find(v.detailItems[1].button.text,"[Owned]",1,true), "Missing owned indicator")
+arg1="LeftButton"
+v.detailObtainedButton.scripts.OnClick()
+assert(not v:IsObtained(13404), "Detail button did not unmark item")
+assert(not VBTCharDB.obtainedItems["13404"], "Unmark did not clear saved value")
+
 for phase=1,7 do
   VBTDB.phase=phase
   for _, slot in ipairs(v.slots) do
@@ -63,9 +76,11 @@ for phase=1,7 do
       assert(type(row.source)=="table" and type(row.source.SetText)=="function",
         "Source widget overwritten in "..slot)
       if row.id then
-        local before=table.getn(chatMessages)
+        arg1="LeftButton"
         row.button.scripts.OnClick()
-        assert(table.getn(chatMessages)==before+1, "Item click failed in "..slot)
+        assert(v.detailFrame.visible, "Details not visible for "..slot)
+        assert(v.openDetailId==row.id, "Incorrect detail item for "..slot)
+        v.detailFrame:Hide()
       end
     end
   end
@@ -79,4 +94,4 @@ v.detectedSpec="Enhancement"
 v.selectedSlot="Main Hand"
 v:RefreshUI()
 assert(v.detailItems[1].id==18538,"Shaman main hand not shown")
-print("PASS: mock UI renders source text, clicks every item, 7 phases, all equipment slots and two specs")
+print("PASS: detail modal, per-character obtained toggle, UI clicks across phases/slots")
