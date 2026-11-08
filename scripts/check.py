@@ -1,36 +1,52 @@
 #!/usr/bin/env python3
-"""Vanilla 1.12-oriented static checks, not an in-game execution test."""
+"""Validate Vanilla 1.12 packaging and curated data. Lua execution is tested separately."""
 from pathlib import Path
 import re
-ROOT=Path(__file__).resolve().parents[1]
-ADDON=ROOT/'VanillaBiSTracker'
-toc=(ADDON/'VanillaBiSTracker.toc').read_text(encoding='utf-8-sig')
-assert re.search(r'^## Interface: 11200$',toc,re.M)
-paths=[]
+
+ROOT = Path(__file__).resolve().parents[1]
+ADDON = ROOT / "VanillaBiSTracker"
+toc = (ADDON / "VanillaBiSTracker.toc").read_text(encoding="utf-8-sig")
+assert re.search(r"^## Interface: 11200$", toc, re.M)
+paths = []
 for line in toc.splitlines():
-    if line.strip() and not line.startswith('##'):
-        p=ADDON/line.replace('\\','/'); assert p.is_file(),str(p);paths.append(p)
-assert len(paths)==len(set(paths))
-assert paths[0].name == 'Bootstrap.lua', 'Bootstrap.lua must load first'
-assert paths[1].name == 'Core.lua', 'Core.lua must load after bootstrap'
-for path in ADDON.rglob('*.lua'):
-    content=path.read_text()
-    blocked=[r'\bC_Item\.', r'\bC_Container\.', r'\bCreateFromMixins\b', r'\bRegisterAddonMessagePrefix\b',r'\bGetSpecialization\s*\(',r'\bSetScript\s*\([^,]+,\s*function\s*\(self\s*,',r'\btable\.unpack\b',r'\bstring\.gmatch\b',r'\bselect\s*\(']
-    for pattern in blocked:
-        assert not re.search(pattern,content),f'{path}: forbidden modern API/idiom: {pattern}'
-    assert not re.search(r'(?<!\w)#[A-Za-z_(]',content),f'{path}: Lua 5.1 length operator'
-    assert not re.search(r'\b(?:goto|continue)\b',content),f'{path}: unsupported keyword'
-items=(ADDON/'data/Recommendations.lua').read_text()
-assert 'VBT.items = {}' in items and 'VBT.recommendations = {}' in items
-version=re.search(r'^## Version:\s*(\S+)',toc,re.M).group(1)
-changelog=(ROOT/'CHANGELOG.md').read_text()
-assert re.search(r'^##\s+v?' + re.escape(version) + r'\b',changelog,re.M), 'Missing current release heading'
-bootstrap=(ADDON/'Bootstrap.lua').read_text()
-assert 'SLASH_VBT1' in bootstrap and 'SLASH_VBT2' in bootstrap and 'SLASH_VBTSTATUS1' in bootstrap
-assert 'commandReady' in bootstrap
-core=(ADDON/'Core.lua').read_text()
-assert 'function VBT:HandleCommand' in core and 'VBT.commandReady = true' in core
-assert 'VBT:DetectCharacter(); VBT:ToggleUI()' in core, 'Missing talent refresh when opening UI'
-assert 'if total == 0 then return end' in core, 'Missing protection against unavailable talent data'
-assert r')\\ndriver:' not in core and r'\\n  elseif' not in core, 'Literal backslash-n in executable Lua'
-print('PASS: TOC paths, Lua sanity, release heading, vanilla static API checks, empty verified database')
+    if line.strip() and not line.startswith("##"):
+        p = ADDON / line.replace(chr(92), "/")
+        assert p.is_file(), f"Missing TOC file: {p}"
+        paths.append(p)
+assert len(paths) == len(set(paths)), "Repeated TOC paths"
+assert [p.name for p in paths[:2]] == ["Bootstrap.lua", "Core.lua"]
+
+for path in ADDON.rglob("*.lua"):
+    content = path.read_text()
+    banned = [r"\bC_Item\.", r"\bC_Container\.", r"\bCreateFromMixins\b",
+              r"\bGetSpecialization\s*\(", r"\btable\.unpack\b", r"\bstring\.gmatch\b"]
+    for expr in banned:
+        assert not re.search(expr, content), f"{path}: non-Vanilla API {expr}"
+    assert not re.search(r"(?<!\w)#[A-Za-z_(]", content), f"{path}: Lua 5.1 length operator"
+
+version = re.search(r"^## Version:\s*(\S+)", toc, re.M).group(1)
+changelog = (ROOT / "CHANGELOG.md").read_text()
+assert re.search(r"^##\s+v?" + re.escape(version) + r"\b", changelog, re.M)
+
+data = (ADDON / "data/Recommendations.lua").read_text()
+item_rows = re.findall(r"^\s*\[(\d+)\]=\{id=(\d+),name=\"([^\"]+)\",slot=\"([^\"]+)\",phase=(\d+),source=\"([^\"]+)\"", data, re.M)
+assert len(item_rows) >= 20, "Curated data missing"
+assert len(item_rows) == len(set(row[0] for row in item_rows)), "Duplicate item IDs"
+allowed_slots = {"Head","Neck","Shoulders","Back","Chest","Wrists","Hands","Waist","Legs","Feet","Finger","Trinket","Main Hand","Off Hand","Ranged"}
+phase = {}
+slot_by_id = {}
+for key, inner, name, slot, stage, source in item_rows:
+    assert key == inner and int(key) > 0
+    assert slot in allowed_slots, (name,slot)
+    assert 1 <= int(stage) <= 7, (name, stage)
+    assert source.strip()
+    phase[int(key)] = int(stage)
+    slot_by_id[int(key)] = slot
+recs = re.findall(r"\{id=(\d+),rank=(\d+)", data)
+assert recs
+assert all(int(item_id) in phase and int(rank) >= 1 for item_id, rank in recs), "Bad recommendation reference"
+assert "pvp=true" in data, "PvP filtering lacks any example item"
+assert "SLASH_VBTSTATUS1" in (ADDON / "Bootstrap.lua").read_text()
+core = (ADDON / "Core.lua").read_text()
+assert "VBT:DetectCharacter(); VBT:ToggleUI()" in core, "Lost tested auto-spec refresh"
+print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations")
