@@ -62,6 +62,39 @@ function VBT:BuildUI()
     b:SetScript("OnClick",function() VBT.selectedSlot=selected; VBT.detailPage=1; VBT:RefreshUI() end)
     self.slotButtons[i]=b
   end
+  -- An in-addon detail overlay keeps acquisition information readable without chat spam.
+  local detailFrame=CreateFrame("Frame", nil, frame)
+  detailFrame:SetWidth(490); detailFrame:SetHeight(265)
+  detailFrame:SetPoint("CENTER", frame, "CENTER", 0, 0)
+  detailFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+  detailFrame:SetBackdrop({
+    bgFile="Interface\\\\DialogFrame\\\\UI-DialogBox-Background",
+    edgeFile="Interface\\\\DialogFrame\\\\UI-DialogBox-Border",
+    tile=true, tileSize=32, edgeSize=32,
+    insets={left=11,right=12,top=12,bottom=11}
+  })
+  detailFrame:EnableMouse(true)
+  local detailShade=detailFrame:CreateTexture(nil,"BACKGROUND")
+  detailShade:SetAllPoints(detailFrame)
+  detailShade:SetTexture(0,0,0,0.96)
+  self.detailFrame=detailFrame
+  self.detailName=label(detailFrame, 25, -24, 395, "")
+  self.detailSource=label(detailFrame, 25, -76, 440, "")
+  self.detailSource:SetHeight(105)
+  self.detailOwned=label(detailFrame, 25, -195, 435, "")
+  local detailClose=button(detailFrame, 80, 23, 382, -20, "Back")
+  detailClose:SetScript("OnClick",function() detailFrame:Hide() end)
+  local obtainedButton=button(detailFrame, 195, 24, 25, -226, "Toggle obtained")
+  obtainedButton:SetScript("OnClick",function()
+    if VBT.openDetailId then
+      VBT:ToggleObtained(VBT.openDetailId)
+      VBT:RefreshUI()
+      VBT:RefreshItemDetails()
+    end
+  end)
+  self.detailObtainedButton=obtainedButton
+  detailFrame:Hide()
+
   self.detailsTitle=label(frame, 343, -155, 287, "")
   self.detailsCount=label(frame, 343, -178, 287, "")
   self.detailItems={}
@@ -71,6 +104,7 @@ function VBT:BuildUI()
     local sourceText=label(frame, 346, y-28, 277, "")
     sourceText:SetHeight(42)
     local slotIndex = i
+    b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     b:SetScript("OnEnter",function()
       local entry = VBT.detailItems[slotIndex]
       if entry and entry.id and GameTooltip then
@@ -84,9 +118,14 @@ function VBT:BuildUI()
     b:SetScript("OnLeave",function() if GameTooltip then GameTooltip:Hide() end end)
     b:SetScript("OnClick",function()
       local entry=VBT.detailItems[slotIndex]
-      if entry then
-        VBT:Print(entry.name .. " [" .. entry.id .. "] - " .. (entry.itemSource or "Unknown") ..
-        (entry.boss and (", " .. entry.boss) or ""))
+      if not entry or not entry.id then return end
+      -- Vanilla 1.12 supplies the clicked button through the global arg1.
+      if arg1 == "RightButton" then
+        VBT:ToggleObtained(entry.id)
+        VBT:RefreshUI()
+        if VBT.openDetailId == entry.id then VBT:RefreshItemDetails() end
+      else
+        VBT:ShowItemDetails(entry.id, entry.note)
       end
     end)
     self.detailItems[i]={button=b,source=sourceText}
@@ -120,7 +159,7 @@ function VBT:RefreshUI()
   elseif total == 0 then
     self.detailsCount:SetText("No curated recommendations for this slot.")
   else
-    self.detailsCount:SetText(total .. " eligible candidate(s) - hover for tooltip")
+    self.detailsCount:SetText(total .. " candidate(s) - left: details / right: obtained")
   end
   for i, row in ipairs(self.detailItems) do
     local entry=recs[(self.detailPage-1)*3+i]
@@ -129,7 +168,9 @@ function VBT:RefreshUI()
       row.name=entry.item.name
       row.itemSource=entry.item.source
       row.boss=entry.item.boss
-      row.button:SetText(((self.detailPage-1)*3+i) .. ". " .. entry.item.name)
+      row.note=entry.note
+      row.button:SetText((self:IsObtained(entry.item.id) and "[Owned] " or "") ..
+        ((self.detailPage-1)*3+i) .. ". " .. entry.item.name)
       row.button:Show()
       row.source:SetText((entry.item.source or "Unknown source") ..
         (entry.item.boss and (" - " .. entry.item.boss) or "") ..
@@ -137,6 +178,7 @@ function VBT:RefreshUI()
       row.source:Show()
     else
       row.id=nil
+      row.note=nil
       row.button:Hide()
       row.source:Hide()
     end
@@ -148,4 +190,33 @@ end
 function VBT:ToggleUI()
   if not self.frame then self:Print("Not initialized yet."); return end
   if self.frame:IsVisible() then self.frame:Hide() else self:RefreshUI(); self.frame:Show() end
+end
+
+function VBT:RefreshItemDetails()
+  if not self.detailFrame or not self.openDetailId then return end
+  local item=self.items[self.openDetailId]
+  if not item then self.detailFrame:Hide(); self.openDetailId=nil; return end
+  self.detailName:SetText(item.name .. "  [ID " .. item.id .. "]")
+  local phase=self.phases[item.phase]
+  local source="Source: " .. (item.source or "Not documented")
+  if item.boss then source=source .. "\nBoss / requirement: " .. item.boss end
+  if phase then source=source .. "\nAvailable from: " .. phase.name end
+  if item.pvp then source=source .. "\nPvP reward (requires PvP toggle)" end
+  if self.openDetailNote and self.openDetailNote ~= "" then
+    source=source .. "\nNotes: " .. self.openDetailNote
+  end
+  self.detailSource:SetText(source)
+  self.detailOwned:SetText(self:IsObtained(item.id) and
+    "Status: Obtained on this character" or "Status: Not marked as obtained")
+  self.detailObtainedButton:SetText(self:IsObtained(item.id) and
+    "Mark as missing" or "Mark as obtained")
+end
+
+function VBT:ShowItemDetails(id, note)
+  if not self.detailFrame or not self.items[id] then return end
+  self.openDetailId=id
+  self.openDetailNote=note
+  if GameTooltip then GameTooltip:Hide() end
+  self:RefreshItemDetails()
+  self.detailFrame:Show()
 end
