@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0 — Interactive item details and obtained tracking
+- Left-click a recommendation to open an in-addon acquisition panel with source, boss/requisite, earliest phase, notes and current obtained status.
+- Right-click an item to mark it obtained or missing without removing it from the list.
+- Store obtained state by item ID in SavedVariablesPerCharacter, so flags persist across sessions independently for each character.
+- Display [Owned] on obtained candidates and permit marking items from the details panel.
+- Preserve hover item tooltips and progression/PvP filters.
+- Add mock UI regression coverage for details and per-character obtained toggles.
+
+
 ## 0.2.2 — Fix clicking item recommendations
 - Fix UI.lua:89 error when clicking items: the click handler now reads itemSource rather than concatenating the source FontString widget.
 - Item clicks print the item name, ID, and acquisition source to chat. Hover tooltips and progression filtering are unchanged.
