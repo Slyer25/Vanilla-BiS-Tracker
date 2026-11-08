@@ -23,7 +23,7 @@ VBT.items = {
   [16984]={id=16984,name="Black Dragonscale Boots",slot="Feet",phase=2,source="Leatherworking",boss="Black Dragon Mail set; requires raid materials"},
   [18393]={id=18393,name="Warpwood Binding",slot="Waist",phase=3,source="Dire Maul West",boss="Tendris Warpwood"},
   [19146]={id=19146,name="Wristguards of Stability",slot="Wrists",phase=2,source="Molten Core",boss="Molten Core trash"},
-  [19323]={id=19323,name="The Unstoppable Force",slot="Main Hand",phase=3,source="Alterac Valley",boss="Exalted reputation"},
+  [19323]={id=19323,name="The Unstoppable Force",slot="Main Hand",phase=3,source="Alterac Valley",boss="Exalted reputation",pvp=true},
   [12784]={id=12784,name="Arcanite Reaper",slot="Main Hand",phase=1,source="Blacksmithing",boss="Master Axesmith craft"},
   [18374]={id=18374,name="Flamescarred Shoulders",slot="Shoulders",phase=3,source="Dire Maul West",boss="Magister Kalendris"},
   [14616]={id=14616,name="Bloodmail Boots",slot="Feet",phase=1,source="Scholomance",boss="Scholomance trash"},
