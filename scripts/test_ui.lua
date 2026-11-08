@@ -5,12 +5,12 @@ local function widget()
   local w={}
   local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing"}
   for _, name in ipairs(methods) do
-    w[name]=function(self,value)
+    w[name]=function(self,value,callback)
       if name=="SetText" then
         assert(type(self)=="table", "SetText invoked on non-widget")
         self.text=value
       elseif name=="SetScript" then
-        self.scripts=self.scripts or {}
+        self.scripts=self.scripts or {}\n        self.scripts[value]=callback
       end
     end
   end
@@ -35,7 +35,7 @@ function UnitRace() return "Night Elf","NIGHTELF" end
 function UnitFactionGroup() return "Alliance" end
 function UnitName() return "TestRogue" end
 function GetRealmName() return "Test" end
-DEFAULT_CHAT_FRAME={AddMessage=function() end}
+local chatMessages={}\nDEFAULT_CHAT_FRAME={AddMessage=function(self,msg) table.insert(chatMessages,msg) end}
 VBTDB={phase=1, includePvP=false}
 VBTCharDB={}
 dofile("VanillaBiSTracker/Bootstrap.lua")
@@ -47,7 +47,7 @@ local v=VanillaBiSTracker
 v:Initialize()
 assert(v:GetSpec()=="Combat")
 assert(v.detailItems[1].source.text:find("Stratholme"),"Initial source missing")
-assert(v.detailItems[1].itemSource=="Stratholme")
+assert(v.detailItems[1].itemSource=="Stratholme")\nassert(v.detailItems[1].button.scripts.OnClick, "Missing click handler")\nv.detailItems[1].button.scripts.OnClick()\nassert(chatMessages[1] and string.find(chatMessages[1],"Stratholme",1,true), "Click did not print item acquisition source")
 for phase=1,7 do
   VBTDB.phase=phase
   for _, slot in ipairs(v.slots) do
@@ -69,4 +69,4 @@ v.detectedSpec="Enhancement"
 v.selectedSlot="Main Hand"
 v:RefreshUI()
 assert(v.detailItems[1].id==18538,"Shaman main hand not shown")
-print("PASS: mock UI renders source text, 7 phases, all equipment slots and two specs")
+print("PASS: mock UI renders source text, clicks every item, 7 phases, all equipment slots and two specs")
