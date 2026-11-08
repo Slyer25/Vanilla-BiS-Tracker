@@ -3,7 +3,7 @@
 SlashCmdList={}
 local function widget()
   local w={}
-  local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing","RegisterForClicks"}
+  local methods={"SetWidth","SetHeight","SetPoint","SetText","SetJustifyH","SetJustifyV","SetBackdrop","EnableMouse","SetMovable","RegisterForDrag","SetFrameStrata","SetAllPoints","SetTexture","SetScript","SetOwner","SetHyperlink","StartMoving","StopMovingOrSizing","RegisterForClicks","SetBackdropColor","SetBackdropBorderColor","SetFrameLevel"}
   for _, name in ipairs(methods) do
     w[name]=function(self,value,callback)
       if name=="SetText" then
@@ -21,6 +21,7 @@ local function widget()
   w.Show=function(self) self.visible=true end
   w.IsVisible=function(self) return self.visible end
   w.RegisterEvent=function() end
+  w.GetFrameLevel=function() return 1 end
   return w
 end
 UIParent=widget()
@@ -48,6 +49,9 @@ dofile("VanillaBiSTracker/UI.lua")
 local v=VanillaBiSTracker
 v:Initialize()
 assert(v:GetSpec()=="Combat")
+assert(not string.find(assert(io.open("VanillaBiSTracker/UI.lua")):read("*a"), 'local shade = frame:CreateTexture', 1, true),
+  "Main frame must not use separate black overlay texture")
+assert(v.detailFrame and v.detailFrame.visible == false, "Item details should begin hidden")
 assert(v.detailItems[1].source.text:find("Stratholme"),"Initial source missing")
 assert(v.detailItems[1].itemSource=="Stratholme")
 assert(v.detailItems[1].button.scripts.OnClick, "Missing item click")
