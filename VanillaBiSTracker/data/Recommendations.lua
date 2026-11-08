@@ -65,7 +65,7 @@ VBT.recommendations = {
     ["Ring 2"]={{id=19325,rank=1},{id=18500,rank=2},{id=17713,rank=3}},
     ["Trinket 1"]={{id=19406,rank=1},{id=11815,rank=2},{id=13965,rank=3}},
     ["Trinket 2"]={{id=19406,rank=1},{id=11815,rank=2},{id=13965,rank=3}},
-    ["Main Hand"]={{id=18538,rank=1,note="2H axe; class/race weapon requirements apply."}},
+    ["Main Hand"]={{id=18538,rank=1,note="Requires the Enhancement Two-Handed Axes and Maces talent."}},
     ["Waist"]={{id=19380,rank=1}},
   },
 }
