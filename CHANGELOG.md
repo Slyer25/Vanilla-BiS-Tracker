@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 — Fix clicking item recommendations
+- Fix UI.lua:89 error when clicking items: the click handler now reads itemSource rather than concatenating the source FontString widget.
+- Item clicks print the item name, ID, and acquisition source to chat. Hover tooltips and progression filtering are unchanged.
+- Expand mock UI regression tests to execute item click callbacks across every slot and progression phase.
+
 ## 0.2.1 — Fix item-source UI crash
 - Fix a name collision where the source description overwrote its FontString UI control, causing UI.lua:134 to attempt SetText on a string.
 - Preserve the original source widget and store item acquisition text separately as itemSource.
