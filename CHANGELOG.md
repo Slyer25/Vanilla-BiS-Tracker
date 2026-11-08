@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 — Fix item-source UI crash
+- Fix a name collision where the source description overwrote its FontString UI control, causing UI.lua:134 to attempt SetText on a string.
+- Preserve the original source widget and store item acquisition text separately as itemSource.
+- Add a mocked Lua UI test covering all seven progression phases, equipment slots and both initial specializations.
+
 ## 0.2.0 — First curated gear candidates and progression filtering
 - Add 26 cross-checked original Vanilla item IDs with dungeon/crafted/MC/Onyxia/Dire Maul/PvP/BWL sources.
 - First partial Combat Rogue and Enhancement Shaman PvE shortlists; PvP remains opt-in and phase-gated.
