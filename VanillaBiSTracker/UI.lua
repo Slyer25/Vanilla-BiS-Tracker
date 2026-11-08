@@ -127,7 +127,7 @@ function VBT:RefreshUI()
     if entry then
       row.id=entry.item.id
       row.name=entry.item.name
-      row.source=entry.item.source
+      row.itemSource=entry.item.source
       row.boss=entry.item.boss
       row.button:SetText(((self.detailPage-1)*3+i) .. ". " .. entry.item.name)
       row.button:Show()
