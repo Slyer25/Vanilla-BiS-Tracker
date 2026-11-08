@@ -25,7 +25,9 @@ jobs:
         run: find VanillaBiSTracker -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
       - name: Test progression and eligibility
         run: lua5.1 scripts/test_data.lua
-      - name: Render UI with mocked Vanilla frames\n        run: lua5.1 scripts/test_ui.lua\n      - name: Static Vanilla 1.12 checks
+      - name: Render UI with mocked Vanilla frames
+        run: lua5.1 scripts/test_ui.lua
+      - name: Static Vanilla 1.12 checks
         run: python3 scripts/check.py
       - name: Build install-ready ZIP
         run: python3 scripts/package.py
