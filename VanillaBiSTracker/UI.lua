@@ -21,9 +21,8 @@ function VBT:BuildUI()
   frame:EnableMouse(true); frame:SetMovable(true); frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function() this:StartMoving() end)
   frame:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
-  local shade = frame:CreateTexture(nil, "BACKGROUND")
-  shade:SetAllPoints(frame)
-  shade:SetTexture(0, 0, 0, 0.88)
+  -- Tint the actual backdrop rather than overlaying a separate large black texture.
+  frame:SetBackdropColor(0.04, 0.04, 0.06, 0.94)
   frame:Hide()
   self.frame=frame
   label(frame, 20, -18, 490, "Vanilla BiS Tracker  |  original 1.12")
@@ -68,15 +67,14 @@ function VBT:BuildUI()
   detailFrame:SetPoint("CENTER", frame, "CENTER", 0, 0)
   detailFrame:SetFrameStrata("FULLSCREEN_DIALOG")
   detailFrame:SetBackdrop({
-    bgFile="Interface\\\\DialogFrame\\\\UI-DialogBox-Background",
-    edgeFile="Interface\\\\DialogFrame\\\\UI-DialogBox-Border",
-    tile=true, tileSize=32, edgeSize=32,
-    insets={left=11,right=12,top=12,bottom=11}
+    bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+    edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",
+    tile=true, tileSize=16, edgeSize=20,
+    insets={left=5,right=5,top=5,bottom=5}
   })
-  detailFrame:EnableMouse(true)
-  local detailShade=detailFrame:CreateTexture(nil,"BACKGROUND")
-  detailShade:SetAllPoints(detailFrame)
-  detailShade:SetTexture(0,0,0,0.96)
+  detailFrame:SetBackdropColor(0.08,0.08,0.11,0.99)
+  detailFrame:SetBackdropBorderColor(0.65,0.58,0.38,1)
+  detailFrame:SetFrameLevel(frame:GetFrameLevel()+15)
   self.detailFrame=detailFrame
   self.detailName=label(detailFrame, 25, -24, 395, "")
   self.detailSource=label(detailFrame, 25, -76, 440, "")
