@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3 — Specialization refresh on open
+- Re-read the player talent-tree points whenever /bis or /vbt opens the window.
+- Preserve the last valid detected specialization if the 1.12 client temporarily returns zero talent points.
+- Keep /bis talents as an optional diagnostic tool.
+
 ## 0.1.2 — Loading diagnostics
 - Register /bis and /vbt from a minimal bootstrap loaded before the main addon.
 - Add /vbtstatus to distinguish missing installation from a broken addon initialization.
