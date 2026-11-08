@@ -25,7 +25,11 @@ local function widget()
   return w
 end
 UIParent=widget()
-function CreateFrame() return widget() end
+function CreateFrame(frameType, name, parent)
+  local created=widget()
+  created.parent=parent
+  return created
+end
 function GetNumTalentTabs() return 3 end
 function GetTalentTabInfo(i)
   local names={"Assassination","Combat","Subtlety"}
@@ -49,6 +53,12 @@ dofile("VanillaBiSTracker/UI.lua")
 local v=VanillaBiSTracker
 v:Initialize()
 assert(v:GetSpec()=="Combat")
+assert(v.detailFrame.parent==UIParent,"Detail frame must be independent of main window")
+assert(v.detailFrame.parent~=v.frame,"Detail frame must not be child of main tracker")
+assert(v.detailFrame.scripts.OnDragStart and v.detailFrame.scripts.OnDragStop,
+  "Details window must support dragging")
+assert(type(v.detailFrame.StartMoving)=="function" and type(v.detailFrame.StopMovingOrSizing)=="function")
+
 assert(not string.find(assert(io.open("VanillaBiSTracker/UI.lua")):read("*a"), 'local shade = frame:CreateTexture', 1, true),
   "Main frame must not use separate black overlay texture")
 assert(v.detailFrame and v.detailFrame.visible == false, "Item details should begin hidden")
@@ -98,4 +108,9 @@ v.detectedSpec="Enhancement"
 v.selectedSlot="Main Hand"
 v:RefreshUI()
 assert(v.detailItems[1].id==18538,"Shaman main hand not shown")
-print("PASS: detail modal, per-character obtained toggle, UI clicks across phases/slots")
+v.detailFrame:Show()
+v.frame:Show()
+v:CloseUI()
+assert(v.frame.visible==false and v.detailFrame.visible==false,
+  "Closing the main tracker must also close detached details")
+print("PASS: independently draggable details window, per-character obtained toggle, UI clicks across phases/slots")
