@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.2 — Independently movable item details
+- Reparent the details window to UIParent so it moves independently of the main tracker.
+- Allow dragging the details frame to a preferred position without moving the main tracker.
+- Open details as a separate window with a solid inset background and clearer border.
+- Close detached details when the main tracker is closed, avoiding an orphaned window.
+- Extend mock UI tests for independent parenting, drag handlers, and closing both windows.
+
+
 ## 0.3.1 — Frame and item-detail visual cleanup
 - Remove the extra black background texture covering the main addon frame; tint the frame backdrop directly.
 - Correct the details panel backdrop texture paths, and use a dark opaque tooltip-style background and clearly visible border.
