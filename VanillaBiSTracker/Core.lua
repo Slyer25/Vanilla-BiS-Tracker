@@ -1,6 +1,6 @@
 VanillaBiSTracker = VanillaBiSTracker or {}
 local VBT = VanillaBiSTracker
-VBT.version = "0.2.2"
+VBT.version = "0.3.0"
 VBT.phase = 3
 VBT.classes = {
   WARRIOR = {"Arms", "Fury", "Protection"},
@@ -71,6 +71,25 @@ function VBT:GetSpec()
   return self.detectedSpec
 end
 
+-- Obtained flags are deliberately per-character, independent of class/spec and raid phase.
+-- A given item ID appears once even if recommended in multiple equipment slots.
+function VBT:IsObtained(itemID)
+  return VBTCharDB and VBTCharDB.obtainedItems
+    and VBTCharDB.obtainedItems[tostring(itemID)] == true
+end
+
+function VBT:ToggleObtained(itemID)
+  if not VBTCharDB then VBTCharDB = {} end
+  if not VBTCharDB.obtainedItems then VBTCharDB.obtainedItems = {} end
+  local key = tostring(itemID)
+  if VBTCharDB.obtainedItems[key] then
+    VBTCharDB.obtainedItems[key] = nil
+  else
+    VBTCharDB.obtainedItems[key] = true
+  end
+  return self:IsObtained(itemID)
+end
+
 function VBT:GetPhase()
   if VBTDB and VBTDB.phase then return VBTDB.phase end
   return 1
@@ -105,6 +124,7 @@ end
 function VBT:Initialize()
   if not VBTDB then VBTDB = {} end
   if not VBTCharDB then VBTCharDB = {} end
+  if type(VBTCharDB.obtainedItems) ~= "table" then VBTCharDB.obtainedItems = {} end
   if not VBTDB.phase or VBTDB.phase < 1 or VBTDB.phase > table.getn(self.phases) then VBTDB.phase = 1 end
   if VBTDB.includePvP == nil then VBTDB.includePvP = false end
   self:DetectCharacter()
