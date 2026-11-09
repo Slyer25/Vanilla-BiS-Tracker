@@ -16,8 +16,9 @@ VBT.gearSets = {
     {pieces=8,description="On-hit damage and healing effect"}
   }},
   BlackDragonMail = { name="Black Dragon Mail", bonuses={
-    {pieces=2,description="Set bonuses depend on Black Dragonscale pieces"},
-    {pieces=3,description="Review tooltip for the exact 1.12 three-piece bonus"}
+    {pieces=2,description="+1% hit"},
+    {pieces=3,description="+2% critical strike"},
+    {pieces=4,description="+10 fire resistance"}
   }},
   DalRend = { name="Dal'Rend's Arms", bonuses={
     {pieces=2,description="+50 attack power with both swords"}
