@@ -54,6 +54,7 @@ end
 
 for _, id in ipairs({12784,18538,19323}) do
   if VBT.items[id] then
+    VBT.items[id].twoHanded=true
     VBT.items[id].requiresTalent="Two-Handed Axes and Maces"
     VBT.items[id].requiresTalentTree=2
   end
