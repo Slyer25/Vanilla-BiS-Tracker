@@ -2,7 +2,7 @@
 ## Title: Vanilla BiS Tracker
 ## Notes: Phase-aware PvE BiS tracker for original Vanilla WoW 1.12
 ## Author: Community project
-## Version: 0.5.0
+## Version: 0.5.1
 ## SavedVariables: VBTDB
 ## SavedVariablesPerCharacter: VBTCharDB
 
