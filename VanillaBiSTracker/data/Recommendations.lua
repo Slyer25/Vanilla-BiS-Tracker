@@ -6,6 +6,8 @@ local VBT = VanillaBiSTracker
 -- 'pvp' is a separate option; PvP equipment still obeys availability gating.
 -- Sources/justification: see docs/DATA_SOURCES.md.
 VBT.items = {
+  [18816]={id=18816,name="Perdition's Blade",slot="Main Hand",phase=2,source="Molten Core",boss="Ragnaros"},
+  [18805]={id=18805,name="Core Hound Tooth",slot="Off Hand",phase=2,source="Molten Core",boss="Majordomo Executus"},
   [12553]={id=12553,name="Swiftwalker Boots",slot="Feet",phase=1,source="Blackrock Depths",boss="Princess Moira Bronzebeard"},
   [18506]={id=18506,name="Mongoose Boots",slot="Feet",phase=1,source="Leatherworking",boss="Crafted leather armor"},
   [16710]={id=16710,name="Shadowcraft Bracers",slot="Wrists",phase=1,source="Dungeon world drop",boss="Shadowcraft set piece"},
@@ -81,8 +83,8 @@ VBT.recommendations = {
     ["Ring 2"]={{id=17063,rank=1,note="Unique-equipped; do not wear two copies."},{id=19325,rank=2},{id=18500,rank=3},{id=17713,rank=4}},
     ["Trinket 1"]={{id=19406,rank=1},{id=11815,rank=2},{id=13965,rank=3}},
     ["Trinket 2"]={{id=19406,rank=1},{id=11815,rank=2},{id=13965,rank=3}},
-    ["Main Hand"]={{id=19352,rank=1,note="Sword build, BWL upgrade; compare racial sword skill."},{id=17075,rank=2},{id=12940,rank=3,note="Pair with Dal'Rend's Tribal Guardian for set attack power."}},
-    ["Off Hand"]={{id=19351,rank=1,note="Sword skill bonus; Human racial sword skill changes relative value."},{id=18832,rank=2},{id=12939,rank=3,note="Pair with Dal'Rend's Sacred Charge for set attack power."}},
+    ["Main Hand"]={{id=18816,rank=1,build="Dagger",note="Combat Daggers: Molten Core dagger build."},{id=19352,rank=1,note="Sword build, BWL upgrade; compare racial sword skill."},{id=17075,rank=2},{id=12940,rank=3,note="Pair with Dal'Rend's Tribal Guardian for set attack power."}},
+    ["Off Hand"]={{id=18805,rank=1,build="Dagger",note="Combat Daggers: fast offhand alternative."},{id=19351,rank=1,note="Sword skill bonus; Human racial sword skill changes relative value."},{id=18832,rank=2},{id=12939,rank=3,note="Pair with Dal'Rend's Sacred Charge for set attack power."}},
     ["Wrists"]={{id=16911,rank=1},{id=16710,rank=2,note="Shadowcraft set alternative."}},
     ["Waist"]={{id=16910,rank=1},{id=16713,rank=2,note="Shadowcraft set; consider the six-piece bonus."}},
     ["Feet"]={{id=16906,rank=1},{id=18506,rank=2,note="Leatherworking crafted."},{id=12553,rank=3},{id=16711,rank=4,note="Shadowcraft set alternative."}},
