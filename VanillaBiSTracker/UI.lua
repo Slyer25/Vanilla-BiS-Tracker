@@ -77,6 +77,12 @@ function VBT:BuildUI()
     VBT:RefreshUI()
   end)
   label(frame, 205, -120, 430, "Click to cycle: Auto, Tree 1, Tree 2, Tree 3")
+  self.weaponBuildButton=button(frame, 195, 22, 20, -440, "")
+  self.weaponBuildButton:SetScript("OnClick",function()
+    VBT:CycleWeaponBuild()
+    VBT.detailPage=1
+    VBT:RefreshUI()
+  end)
   self.slotButtons={}
   for i,slot in ipairs(self.slots) do
     local col = math.floor((i-1)/9)
@@ -131,6 +137,14 @@ function VBT:BuildUI()
     end
   end)
   self.detailObtainedButton=obtainedButton
+  self.detailPlanButton=button(detailFrame, 195, 24, 253, -226, "Add to plan")
+  self.detailPlanButton:SetScript("OnClick",function()
+    if not VBT.openDetailId or not VBT.openDetailSlot then return end
+    local ok,reason=VBT:PlanItem(VBT.openDetailSlot,VBT.openDetailId)
+    if not ok then VBT:Print(reason) end
+    VBT:RefreshUI()
+    VBT:RefreshItemDetails()
+  end)
   detailFrame:Hide()
 
   self.detailsTitle=label(frame, 343, -155, 287, "")
@@ -163,7 +177,7 @@ function VBT:BuildUI()
         VBT:RefreshUI()
         if VBT.openDetailId == entry.id then VBT:RefreshItemDetails() end
       else
-        VBT:ShowItemDetails(entry.id, entry.note)
+        VBT:ShowItemDetails(entry.id, entry.note, VBT.selectedSlot)
       end
     end)
     self.detailItems[i]={button=b,source=sourceText}
@@ -187,6 +201,12 @@ function VBT:RefreshUI()
   self.phaseText:SetText("Progression "..p.id..": "..p.name)
   self.pvpButton:SetText(VBTDB.includePvP and "PvP: Included" or "PvP: Excluded")
   self.specButton:SetText("Spec: "..(self:GetSpec() or "Unknown")..(VBTCharDB.specOverride and " (manual)" or " (auto)"))
+  if self.class=="ROGUE" and self:GetSpec()=="Combat" then
+    self.weaponBuildButton:SetText("Weapons: "..self:GetWeaponBuild().." ("..self:GetWeaponBuildMode()..")")
+    self.weaponBuildButton:Show()
+  else
+    self.weaponBuildButton:Hide()
+  end
   local recs=self:GetRecommendations(self.selectedSlot)
   local total=table.getn(recs)
   local pages=math.max(1,math.ceil(total/3))
@@ -208,6 +228,7 @@ function VBT:RefreshUI()
       row.boss=entry.item.boss
       row.note=entry.note
       row.button:SetText((self:IsObtained(entry.item.id) and "[Owned] " or "") ..
+        (self:IsPlanned(self.selectedSlot,entry.item.id) and "[Plan] " or "") ..
         ((self.detailPage-1)*3+i) .. ". " .. entry.item.name)
       row.button:Show()
       row.source:SetText((entry.item.source or "Unknown source") ..
@@ -249,20 +270,27 @@ function VBT:RefreshItemDetails()
   if item.boss then source=source .. "\nBoss / requirement: " .. item.boss end
   if phase then source=source .. "\nAvailable from: " .. phase.name end
   if item.pvp then source=source .. "\nPvP reward (requires PvP toggle)" end
+  if item.acquisitionRequirement then source=source .. "\nRequirement: "..item.acquisitionRequirement end
+  if item.sourceStatus~="verified" then source=source .. "\nSource: awaiting verification" end
   if self.openDetailNote and self.openDetailNote ~= "" then
     source=source .. "\nNotes: " .. self.openDetailNote
   end
+  local setEffect=self:GetSetImpact(self.openDetailSlot or "",item.id)
+  if setEffect then source=source .. "\nSet impact: "..setEffect end
   self.detailSource:SetText(source)
   self.detailOwned:SetText(self:IsObtained(item.id) and
     "Status: Obtained on this character" or "Status: Not marked as obtained")
   self.detailObtainedButton:SetText(self:IsObtained(item.id) and
     "Mark as missing" or "Mark as obtained")
+  self.detailPlanButton:SetText(self:IsPlanned(self.openDetailSlot or "",item.id) and
+    "Remove from plan" or "Add to plan")
 end
 
-function VBT:ShowItemDetails(id, note)
+function VBT:ShowItemDetails(id, note, slot)
   if not self.detailFrame or not self.items[id] then return end
   self.openDetailId=id
   self.openDetailNote=note
+  self.openDetailSlot=slot
   if GameTooltip then GameTooltip:Hide() end
   self:RefreshItemDetails()
   self.detailFrame:Show()
