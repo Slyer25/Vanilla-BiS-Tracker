@@ -94,7 +94,7 @@ function VBT:BuildUI()
   end
   -- An independent, draggable window: it is parented to UIParent, not to the tracker.
   local detailFrame=CreateFrame("Frame", "VanillaBiSTrackerDetailFrame", UIParent)
-  detailFrame:SetWidth(490); detailFrame:SetHeight(265)
+  detailFrame:SetWidth(490); detailFrame:SetHeight(320)
   detailFrame:SetPoint("CENTER", UIParent, "CENTER", 160, 0)
   detailFrame:SetFrameStrata("FULLSCREEN_DIALOG")
   detailFrame:EnableMouse(true)
@@ -124,11 +124,11 @@ function VBT:BuildUI()
   self.detailName=label(detailFrame, 25, -24, 395, "")
   label(detailFrame, 25, -52, 320, "Drag this panel to move it")
   self.detailSource=label(detailFrame, 25, -76, 440, "")
-  self.detailSource:SetHeight(105)
-  self.detailOwned=label(detailFrame, 25, -195, 435, "")
+  self.detailSource:SetHeight(155)
+  self.detailOwned=label(detailFrame, 25, -252, 435, "")
   local detailClose=button(detailFrame, 80, 23, 382, -20, "Close")
   detailClose:SetScript("OnClick",function() detailFrame:Hide() end)
-  local obtainedButton=button(detailFrame, 195, 24, 25, -226, "Toggle obtained")
+  local obtainedButton=button(detailFrame, 195, 24, 25, -282, "Toggle obtained")
   obtainedButton:SetScript("OnClick",function()
     if VBT.openDetailId then
       VBT:ToggleObtained(VBT.openDetailId)
@@ -137,7 +137,7 @@ function VBT:BuildUI()
     end
   end)
   self.detailObtainedButton=obtainedButton
-  self.detailPlanButton=button(detailFrame, 195, 24, 253, -226, "Add to plan")
+  self.detailPlanButton=button(detailFrame, 195, 24, 253, -282, "Add to plan")
   self.detailPlanButton:SetScript("OnClick",function()
     if not VBT.openDetailId or not VBT.openDetailSlot then return end
     local ok,reason=VBT:PlanItem(VBT.openDetailSlot,VBT.openDetailId)
