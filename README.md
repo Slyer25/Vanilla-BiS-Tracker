@@ -23,9 +23,9 @@ If `/bis` and `/vbt` do nothing, confirm *Vanilla BiS Tracker* is enabled in the
 A Rogue test on original Vanilla 1.12 confirmed `/bis talents` correctly reads Assassination 16 / Combat 32 / Subtlety 3 and selects Combat; the initial UI opening had shown Unknown. In 0.3.2, the default UI command refreshes character/talent information before showing the window. Retest automatic selection after login without issuing `/bis talents` first.
 
 ## v0.5.1 acquisition verification
-The database now has 36 reviewed acquisition records and 23 still pending; this does **not** verify patch-accurate availability for every item. **Mongoose Boots** become available at the Dire Maul stage (3), not Pre-Raid. The pattern is a chance reward from Knot Thimblejack's Cache and requires Leatherworking 300. A new automated test prevents an accidental earlier unlock.
+The database now has **59 reviewed acquisition records out of 59 catalog items**; this does **not** verify patch-accurate availability for every item. **Mongoose Boots** become available at the Dire Maul stage (3), not Pre-Raid. The pattern is a chance reward from Knot Thimblejack's Cache and requires Leatherworking 300. A new automated test prevents an accidental earlier unlock.
 
-See [SOURCE_AUDIT.md](docs/SOURCE_AUDIT.md) for reviewed sources, the outstanding 23 records and historical caveats.
+See [SOURCE_AUDIT.md](docs/SOURCE_AUDIT.md) for the complete 59-item acquisition ledger and outstanding historical patch questions.
 
 ## v0.5.0 shared gear and acquisition tests
 1. On a Combat Rogue, use the new **Weapons** button to switch between Auto, Sword and Dagger; with Molten Core enabled, Sword lists should include Vis'kag while Dagger lists should offer Perdition's Blade and Core Hound Tooth. If talent points clearly favor Dagger Specialization, Auto should choose daggers.
