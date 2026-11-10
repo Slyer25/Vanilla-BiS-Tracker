@@ -18,6 +18,14 @@ function UnitRace() return "Night Elf","NIGHTELF" end
 function UnitFactionGroup() return "Alliance" end
 function UnitName() return "TestRogue" end
 function GetRealmName() return "Test" end
+local rogueSwordRank, rogueDaggerRank, shamanTwoHandRank=2,0,1
+function GetNumTalents(tree) return tree==2 and 3 or 0 end
+function GetTalentInfo(tree,index)
+  if tree~=2 then return nil,nil,nil,nil,0 end
+  if index==1 then return "Sword Specialization",nil,nil,nil,rogueSwordRank end
+  if index==2 then return "Dagger Specialization",nil,nil,nil,rogueDaggerRank end
+  return "Two-Handed Axes and Maces",nil,nil,nil,shamanTwoHandRank
+end
 DEFAULT_CHAT_FRAME={AddMessage=function() end}
 VBTDB={phase=1,includePvP=false}
 VBTCharDB={}
@@ -25,6 +33,9 @@ dofile("VanillaBiSTracker/Bootstrap.lua")
 dofile("VanillaBiSTracker/Core.lua")
 dofile("VanillaBiSTracker/data/Phases.lua")
 dofile("VanillaBiSTracker/data/Recommendations.lua")
+dofile("VanillaBiSTracker/data/GearRules.lua")
+dofile("VanillaBiSTracker/data/SourceAudit.lua")
+dofile("VanillaBiSTracker/GearEngine.lua")
 local v=VanillaBiSTracker
 v:DetectCharacter()
 assert(v:GetSpec()=="Combat", "Failed to infer 16/32/3 Combat build")
@@ -34,6 +45,15 @@ local function has(slot,id)
   end
   return false
 end
+assert(v:GetWeaponBuild()=="Sword","Combat spec should default to swords")
+assert(not has("Main Hand",18816),"Dagger should be hidden from sword build")
+rogueDaggerRank=4
+assert(v:GetWeaponBuild()=="Dagger","Talent-based Combat Daggers detection failed")
+assert(has("Main Hand",18816)==false,"MC dagger leaked into pre-raid")
+VBTCharDB.weaponBuildOverride="Sword"
+assert(v:GetWeaponBuild()=="Sword","Manual sword override failed")
+VBTCharDB.weaponBuildOverride=nil
+rogueDaggerRank=0
 assert(has("Head",13404))
 assert(not has("Shoulders",16823), "MC gear wrongly in pre-raid")
 assert(not has("Ring 1",18500), "Dire Maul gear wrongly in pre-raid")
@@ -45,6 +65,11 @@ VBTDB.phase=2
 assert(has("Shoulders",16823), "MC gear missing")
 assert(has("Head",16908), "Onyxia Bloodfang Hood missing")
 assert(has("Main Hand",17075), "Onyxia sword missing")
+rogueDaggerRank=4
+assert(has("Main Hand",18816), "Perdition dagger missing for Combat Daggers")
+assert(has("Off Hand",18805), "Core Hound Tooth missing for Combat Daggers")
+assert(not has("Main Hand",17075), "Sword leaked into Combat Daggers")
+rogueDaggerRank=0
 assert(has("Ring 1",17063), "Band of Accuria missing")
 assert(not has("Wrists",16911), "BWL bracers leaked into MC")
 assert(not has("Trinket 1",19406), "BWL gear leaked into MC")
@@ -63,6 +88,9 @@ assert(has("Trinket 1",11815), "Earlier viable gear absent in later phase")
 v.class="SHAMAN"
 v.detectedSpec="Enhancement"
 assert(has("Head",18817))
+shamanTwoHandRank=0
+assert(not has("Main Hand",18538),"Shaman 2H item not restricted by actual talent")
+shamanTwoHandRank=1
 assert(has("Main Hand",18538))
 assert(not has("Main Hand",19323), "Alterac Valley weapon must be PvP gated")
 VBTDB.includePvP=true
@@ -71,6 +99,24 @@ VBTDB.includePvP=false
 assert(has("Chest",11726), "Savage Gladiator Chain missing")
 assert(has("Waist",18393), "Dire Maul waist missing")
 assert(has("Feet",16984), "Crafted raid-material boots missing")
+-- Planned loadout: unique items must not be duplicated in two ring slots.
+local ok,why=v:PlanItem("Ring 1",17063)
+assert(ok and v:IsPlanned("Ring 1",17063))
+ok,why=v:PlanItem("Ring 2",17063)
+assert(ok and v:IsPlanned("Ring 2",17063) and not v:IsPlanned("Ring 1",17063),
+  "Unique ring selected in both slots")
+-- Two-handed weapons clear any off-hand candidate.
+v:GetPlannedItems()["Off Hand"]=12939
+ok,why=v:PlanItem("Main Hand",18538)
+assert(ok and v:GetPlannedItems()["Off Hand"]==nil,"Two-handed weapon did not clear offhand")
+assert(v.items[18805].sourceStatus=="verified","Known item source audit was not loaded")
+assert(v.items[18538].sourceStatus=="needs-review","Unreviewed sources must stay flagged")
+v:GetPlannedItems()["Main Hand"]=nil
+-- Devilsaur 2-piece bonus recognition.
+v:GetPlannedItems()["Hands"]=15063
+local impact=v:GetSetImpact("Legs",15062)
+assert(impact and string.find(impact,"+2%% melee hit"),"Set threshold missing")
+
 v.class="ROGUE"
 v.detectedSpec="Combat"
 v.items[13404].class="SHAMAN"
@@ -78,4 +124,4 @@ assert(not has("Head",13404), "Eligibility restriction failed")
 v.items[13404].class=nil
 VBTCharDB.specOverride="Subtlety"
 assert(not has("Head",13404), "Specialization filtering failed")
-print("PASS: original item phase filtering, BWL additions, PvP rewards, class eligibility, talent detection")
+print("PASS: phase gating, weapon builds, Shaman 2H talent, unique rings, set synergy, sources")
