@@ -36,7 +36,7 @@ function VBT:CycleWeaponBuild()
 end
 
 function VBT:MeetsTalentRequirement(item)
-  if not item.requiresTalent then return true end
+  if not item.requiresTalent or self.class~="SHAMAN" then return true end
   local rank=self:GetTalentRank(item.requiresTalent,item.requiresTalentTree or 2)
   if rank==nil then return true end -- unknown API state; do not silently discard
   return rank>0
@@ -109,6 +109,7 @@ function VBT:GetSetImpact(slot,id)
   local scenario={}
   for key,val in pairs(self:GetPlannedItems()) do scenario[key]=val end
   scenario[slot]=id
+  if slot=="Main Hand" and item.twoHanded then scenario["Off Hand"]=nil end
   if item.unique then
     for key,val in pairs(scenario) do
       if key~=slot and val==id then scenario[key]=nil end
@@ -139,6 +140,7 @@ function VBT:GetPlanWarnings()
   local seen={}
   for slot,id in pairs(planned) do
     local item=self.items[id]
+    if not item then table.insert(warnings,"Unknown item in plan: "..tostring(id)) end
     if item and item.unique and seen[id] then
       table.insert(warnings,item.name.." selected twice")
     end
