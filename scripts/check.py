@@ -26,7 +26,9 @@ for path in ADDON.rglob("*.lua"):
     assert not re.search(r"(?<!\w)#[A-Za-z_(]", content), f"{path}: Lua 5.1 length operator"
 
 version = re.search(r"^## Version:\s*(\S+)", toc, re.M).group(1)
-core_version = re.search(r'^VBT\.version\s*=\s*"([^"\n]+)"\s*
+core_lines = (ADDON / "Core.lua").read_text().splitlines()
+core_versions = [line for line in core_lines if line.startswith("VBT.version = ")]
+assert core_versions == ['VBT.version = "' + version + '"'], "Core.lua and TOC versions must match"
 assert re.search(r"^##\s+v?" + re.escape(version) + r"\b", changelog, re.M)
 
 data = (ADDON / "data/Recommendations.lua").read_text()
