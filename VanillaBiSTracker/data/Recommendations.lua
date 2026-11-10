@@ -9,7 +9,7 @@ VBT.items = {
   [18816]={id=18816,name="Perdition's Blade",slot="Main Hand",phase=2,source="Molten Core",boss="Ragnaros"},
   [18805]={id=18805,name="Core Hound Tooth",slot="Off Hand",phase=2,source="Molten Core",boss="Majordomo Executus"},
   [12553]={id=12553,name="Swiftwalker Boots",slot="Feet",phase=1,source="Blackrock Depths",boss="Princess Moira Bronzebeard"},
-  [18506]={id=18506,name="Mongoose Boots",slot="Feet",phase=1,source="Leatherworking",boss="Crafted leather armor"},
+  [18506]={id=18506,name="Mongoose Boots",slot="Feet",phase=3,source="Leatherworking",boss="Pattern from Knot Thimblejack\'s Cache, Dire Maul"},
   [16710]={id=16710,name="Shadowcraft Bracers",slot="Wrists",phase=1,source="Dungeon world drop",boss="Shadowcraft set piece"},
   [16711]={id=16711,name="Shadowcraft Boots",slot="Feet",phase=1,source="Scholomance",boss="Rattlegore"},
   [16708]={id=16708,name="Shadowcraft Spaulders",slot="Shoulders",phase=1,source="Stratholme",boss="Cannon Master Willey"},
