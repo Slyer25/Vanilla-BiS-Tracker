@@ -1,11 +1,11 @@
 # Vanilla BiS Tracker — WoW 1.12
 
-**v0.5.0 development prerelease — baseline character/UI/phase and position persistence tested in Vanilla 1.12; shared gear rules and source-audit UI require an in-game test.**
+**v0.5.1 development prerelease — baseline character/UI/phase and position persistence tested in Vanilla 1.12; shared gear rules and source-audit UI require an in-game test.**
 
-A fully offline, original Vanilla 1.12 gear recommendation addon. Intended to use progressive content availability with final patch 1.12 item stats. v0.5.0 includes a **partial, curated candidate list** for Combat Rogue (Sword and Dagger builds) and Enhancement Shaman (59 original Vanilla item IDs). It is not a complete BiS guide or an automatic gear optimizer. Recommendations use the final 1.12 items and progressive unlock stages; other class/spec slots remain unpopulated.
+A fully offline, original Vanilla 1.12 gear recommendation addon. Intended to use progressive content availability with final patch 1.12 item stats. v0.5.1 includes a **partial, curated candidate list** for Combat Rogue (Sword and Dagger builds) and Enhancement Shaman (59 original Vanilla item IDs). It is not a complete BiS guide or an automatic gear optimizer. Recommendations use the final 1.12 items and progressive unlock stages; other class/spec slots remain unpopulated.
 
 ## Important: correct installation layout
-Download **Vanilla-BiS-Tracker-0.5.0.zip** from the release's **Assets** section. Do not use GitHub's automatically generated *Source code (zip)* file as an installable addon. If using an Actions artifact, it is wrapped in an outer ZIP: open it and extract the *inner* `Vanilla-BiS-Tracker-0.5.0.zip`.
+Download **Vanilla-BiS-Tracker-0.5.1.zip** from the release's **Assets** section. Do not use GitHub's automatically generated *Source code (zip)* file as an installable addon. If using an Actions artifact, it is wrapped in an outer ZIP: open it and extract the *inner* `Vanilla-BiS-Tracker-0.5.1.zip`.
 
 The directory must be exactly:
 
@@ -21,6 +21,11 @@ If `/bis` and `/vbt` do nothing, confirm *Vanilla BiS Tracker* is enabled in the
 
 ## Test feedback
 A Rogue test on original Vanilla 1.12 confirmed `/bis talents` correctly reads Assassination 16 / Combat 32 / Subtlety 3 and selects Combat; the initial UI opening had shown Unknown. In 0.3.2, the default UI command refreshes character/talent information before showing the window. Retest automatic selection after login without issuing `/bis talents` first.
+
+## v0.5.1 acquisition verification
+The database now has 36 reviewed acquisition records and 23 still pending; this does **not** verify patch-accurate availability for every item. **Mongoose Boots** become available at the Dire Maul stage (3), not Pre-Raid. The pattern is a chance reward from Knot Thimblejack's Cache and requires Leatherworking 300. A new automated test prevents an accidental earlier unlock.
+
+See [SOURCE_AUDIT.md](docs/SOURCE_AUDIT.md) for reviewed sources, the outstanding 23 records and historical caveats.
 
 ## v0.5.0 shared gear and acquisition tests
 1. On a Combat Rogue, use the new **Weapons** button to switch between Auto, Sword and Dagger; with Molten Core enabled, Sword lists should include Vis'kag while Dagger lists should offer Perdition's Blade and Core Hound Tooth. If talent points clearly favor Dagger Specialization, Auto should choose daggers.
