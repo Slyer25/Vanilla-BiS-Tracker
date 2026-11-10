@@ -48,7 +48,7 @@ weapons("Two-Handed Mace", {19323})
 -- Classic version shows 'Unique' (not retail's later 'Unique-Equipped').
 -- Prevent choosing the same ID for both ring slots; don't automatically ban
 -- different items from the same set.
-for _, id in ipairs({17063,19325}) do
+for _, id in ipairs({17063,19325,18816,18805}) do
   if VBT.items[id] then VBT.items[id].unique=true end
 end
 
