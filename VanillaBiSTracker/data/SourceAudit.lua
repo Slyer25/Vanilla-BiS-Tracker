@@ -26,7 +26,7 @@ verified(12927,"dungeon","Upper Blackrock Spire","Pyroguard Emberseer",nil,"http
 verified(16710,"dungeon","Scholomance","Multiple mobs including Instructor Malicia",nil,"https://www.wowhead.com/classic/item=16710")
 verified(16713,"dungeon","Blackrock Spire","Multiple mobs including Smolderthorn Shadow Hunter",nil,"https://www.wowhead.com/classic/item=16713")
 verified(12553,"dungeon","Blackrock Depths","Princess Moira Bronzebeard",
-  "Vanilla loot eligibility may depend on completing the related Princess Moira quest chain",
+  "Loot eligibility may vary with Princess Moira quest state; verify on original 1.12 client",
   "https://www.wowhead.com/classic/item=12553")
 verified(19325,"reputation","Alterac Valley","Stormpike Guard / Frostwolf Clan",
   "Exalted; PvP rewards must be enabled","https://www.wowhead.com/classic/item=19325")
@@ -38,3 +38,10 @@ verified(16984,"craft","Leatherworking","Black Dragon Mail",
   "https://www.wowhead.com/classic/item=16984")
 -- Additional source verification is tracked in docs/SOURCE_AUDIT.md.
 -- Do not label the remaining records verified based only on a source string.
+
+-- Original Classic records explicitly checked:
+verified(19323,"reputation","Alterac Valley","Frostwolf Clan / Stormpike Guard",
+  "Exalted reputation; PvP rewards toggle required",
+  "https://www.wowhead.com/classic/item=19323")
+verified(18805,"raid","Molten Core","Majordomo Executus",nil,
+  "https://www.wowhead.com/classic/item=18805")
