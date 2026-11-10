@@ -122,7 +122,12 @@ assert(v.items[18805].sourceStatus=="verified","Known item source audit was not 
 assert(v.items[18506].sourceStatus=="verified" and v.items[18506].phase==3, "Mongoose Boots source/phase audit missing")
 assert(v.items[19436].sourceType=="raid-trash", "BWL trash cloak must not be boss-classified")
 assert(v.items[19146].boss and string.find(v.items[19146].boss, "Lucifron",1,true), "Wristguards of Stability source incomplete")
-assert(v.items[18538].sourceStatus=="needs-review","Unreviewed sources must stay flagged")
+assert(v.items[18538].sourceStatus=="verified","Gordok Tribute source review missing")
+for id,item in pairs(v.items) do
+  assert(item.sourceStatus=="verified","Unreviewed item source: "..id)
+  assert(item.sourceRef and string.find(item.sourceRef,"https://",1,true),
+    "Missing evidence link for item "..id)
+end
 v:GetPlannedItems()["Main Hand"]=nil
 -- Devilsaur 2-piece bonus recognition.
 v:GetPlannedItems()["Hands"]=15063
