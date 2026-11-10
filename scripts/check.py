@@ -26,6 +26,64 @@ for path in ADDON.rglob("*.lua"):
     assert not re.search(r"(?<!\w)#[A-Za-z_(]", content), f"{path}: Lua 5.1 length operator"
 
 version = re.search(r"^## Version:\s*(\S+)", toc, re.M).group(1)
+core_version = re.search(r'^VBT\.version\s*=\s*"([^"\n]+)"\s*
+assert re.search(r"^##\s+v?" + re.escape(version) + r"\b", changelog, re.M)
+
+data = (ADDON / "data/Recommendations.lua").read_text()
+item_rows = re.findall(r"^\s*\[(\d+)\]=\{id=(\d+),name=\"([^\"]+)\",slot=\"([^\"]+)\",phase=(\d+),source=\"([^\"]+)\"", data, re.M)
+assert len(item_rows) >= 20, "Curated data missing"
+assert len(item_rows) == len(set(row[0] for row in item_rows)), "Duplicate item IDs"
+allowed_slots = {"Head","Neck","Shoulders","Back","Chest","Wrists","Hands","Waist","Legs","Feet","Finger","Trinket","Main Hand","Off Hand","Ranged"}
+phase = {}
+slot_by_id = {}
+for key, inner, name, slot, stage, source in item_rows:
+    assert key == inner and int(key) > 0
+    assert slot in allowed_slots, (name,slot)
+    assert 1 <= int(stage) <= 7, (name, stage)
+    assert source.strip()
+    phase[int(key)] = int(stage)
+    slot_by_id[int(key)] = slot
+recs = re.findall(r"\{id=(\d+),rank=(\d+)", data)
+assert recs
+assert all(int(item_id) in phase and int(rank) >= 1 for item_id, rank in recs), "Bad recommendation reference"
+# Each displayed recommendation must target the matching equipment slot.
+# Ring/Trinket recommendations reuse the same item type in two UI slots.
+slot_blocks = re.findall(r'^    \["([^"]+)"\]=(\{\{[^\n]+)', data, re.M)
+assert len(slot_blocks) >= 25, "Missing class/spec slot recommendations"
+for display_slot, line in slot_blocks:
+    accepted = display_slot
+    if display_slot.startswith("Ring "): accepted="Finger"
+    if display_slot.startswith("Trinket "): accepted="Trinket"
+    for rec_id in re.findall(r'\{id=(\d+),rank=', line):
+        assert slot_by_id[int(rec_id)] == accepted, (
+            display_slot, rec_id, slot_by_id[int(rec_id)])
+assert len(item_rows) >= 59, "Expanded dataset missing"
+assert "pvp=true" in data, "PvP filtering lacks any example item"
+assert re.search(r'\[19323\].*pvp=true',data), "Alterac Valley weapon must require PvP toggle"
+# Validate structural source-review inventory before introducing later raid phases.
+audit=(ADDON / "data/SourceAudit.lua").read_text()
+reviewed=re.findall(r'^verified\((\d+),',audit,re.M)
+assert len(reviewed)==len(set(reviewed)), "Duplicate reviewed source ID"
+assert set(map(int, reviewed)) == set(slot_by_id), "Every catalog item requires reviewed acquisition evidence"
+assert all(int(i) in slot_by_id for i in reviewed), "Audit references missing item IDs"
+assert audit.count('https://') >= len(reviewed), "Missing reviewed acquisition evidence URLs"
+assert re.search(r'^verified\(18506,', audit, re.M), "Missing verified Dire Maul crafting source"
+assert 'item.sourceStatus="needs-review"' in audit, "Missing default source confidence status"
+assert 'item.sourceRef=url' in audit, "Missing source evidence references"
+rules=(ADDON / "data/GearRules.lua").read_text()
+assert 'VBT.gearSets' in rules, "Missing set-bonus metadata"
+assert 'VBT.items[id].requiresTalent=' in rules, "Missing two-handed talent metadata"
+assert 'VBT.items[id].unique=true' in rules, "Missing unique-item metadata"
+engine=(ADDON / "GearEngine.lua").read_text()
+for fn in ['GetWeaponBuild','MeetsTalentRequirement','PlanItem','GetSetCounts','GetPlanWarnings']:
+    assert ('function VBT:'+fn) in engine, f"Shared gear function missing: {fn}"
+assert 'PassesGearRequirements(item,slot)' in (ADDON / "Core.lua").read_text()
+assert "SLASH_VBTSTATUS1" in (ADDON / "Bootstrap.lua").read_text()
+core = (ADDON / "Core.lua").read_text()
+assert "VBT:DetectCharacter(); VBT:ToggleUI()" in core, "Lost tested auto-spec refresh"
+print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations, slot compatibility, {len(reviewed)} reviewed sources")
+, (ADDON / "Core.lua").read_text(), re.M)
+assert core_version and core_version.group(1) == version, "Core.lua and TOC versions must match"
 changelog = (ROOT / "CHANGELOG.md").read_text()
 assert re.search(r"^##\s+v?" + re.escape(version) + r"\b", changelog, re.M)
 
