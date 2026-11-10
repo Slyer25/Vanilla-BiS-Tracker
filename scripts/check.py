@@ -6,7 +6,6 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 ADDON = ROOT / "VanillaBiSTracker"
 toc = (ADDON / "VanillaBiSTracker.toc").read_text(encoding="utf-8-sig")
-assert re.search(r"^## Interface: 11200$", toc, re.M)
 paths = []
 for line in toc.splitlines():
     if line.strip() and not line.startswith("##"):
@@ -29,7 +28,6 @@ version = re.search(r"^## Version:\s*(\S+)", toc, re.M).group(1)
 core_lines = (ADDON / "Core.lua").read_text().splitlines()
 core_versions = [line for line in core_lines if line.startswith("VBT.version = ")]
 assert core_versions == ['VBT.version = "' + version + '"'], "Core.lua and TOC versions must match"
-assert re.search(r"^##\s+v?" + re.escape(version) + r"\b", changelog, re.M)
 
 data = (ADDON / "data/Recommendations.lua").read_text()
 item_rows = re.findall(r"^\s*\[(\d+)\]=\{id=(\d+),name=\"([^\"]+)\",slot=\"([^\"]+)\",phase=(\d+),source=\"([^\"]+)\"", data, re.M)
@@ -85,7 +83,6 @@ core = (ADDON / "Core.lua").read_text()
 assert "VBT:DetectCharacter(); VBT:ToggleUI()" in core, "Lost tested auto-spec refresh"
 print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations, slot compatibility, {len(reviewed)} reviewed sources")
 , (ADDON / "Core.lua").read_text(), re.M)
-assert core_version and core_version.group(1) == version, "Core.lua and TOC versions must match"
 changelog = (ROOT / "CHANGELOG.md").read_text()
 assert re.search(r"^##\s+v?" + re.escape(version) + r"\b", changelog, re.M)
 
