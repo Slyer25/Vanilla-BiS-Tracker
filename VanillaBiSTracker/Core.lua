@@ -1,6 +1,6 @@
 VanillaBiSTracker = VanillaBiSTracker or {}
 local VBT = VanillaBiSTracker
-VBT.version = "0.4.0"
+VBT.version = "0.5.0"
 VBT.phase = 3
 VBT.classes = {
   WARRIOR = {"Arms", "Fury", "Protection"},
@@ -113,7 +113,7 @@ function VBT:GetRecommendations(slot)
   if not recommendations or not recommendations[slot] then return output end
   for _, recommendation in ipairs(recommendations[slot]) do
     local item = self.items[recommendation.id]
-    if item and self:Eligible(item) and (not recommendation.phase or recommendation.phase <= self:GetPhase()) then
+    if item and self:PassesGearRequirements(item,slot) and (not recommendation.phase or recommendation.phase <= self:GetPhase()) then
       table.insert(output, {item=item, rank=recommendation.rank, note=recommendation.note})
     end
   end
