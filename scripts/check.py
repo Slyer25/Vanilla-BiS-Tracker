@@ -15,6 +15,7 @@ for line in toc.splitlines():
         paths.append(p)
 assert len(paths) == len(set(paths)), "Repeated TOC paths"
 assert [p.name for p in paths[:2]] == ["Bootstrap.lua", "Core.lua"]
+assert [p.name for p in paths[3:8]] == ["Recommendations.lua","GearRules.lua","SourceAudit.lua","GearEngine.lua","UI.lua"], "Gear/source modules must load after items and before UI"
 
 for path in ADDON.rglob("*.lua"):
     content = path.read_text()
