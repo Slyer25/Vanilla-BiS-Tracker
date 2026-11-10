@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.1 — Acquisition-source audit batch and progression correction
+- Review acquisition evidence for 21 more original Vanilla items: 36/59 reviewed in total, 23 still pending.
+- Correct Mongoose Boots availability from Pre-Raid to Dire Maul stage 3: the 300 Leatherworking pattern is obtained from Knot Thimblejack's Cache.
+- Distinguish Wristguards of Stability's four Molten Core boss drops from raid trash.
+- Identify Cloak of Draconic Might as Blackwing Lair Death Talon trash loot.
+- Record multiple eligible bosses for Cadaverous Armor and Bloodmail Boots, and multi-NPC drops for Shadowcraft Bracers and Belt.
+- Expand exact quest, tribute-cache, reputation and craft acquisition requirements and independent source references.
+- Strengthen source-coverage checks and tests preventing the premature Mongoose Boots unlock.
+- Historical patch-specific availability remains separate from acquisition verification.
+
+
 ## 0.5.0 — Shared gear rules, loadout planning and source auditing
 - Distinguish Combat Rogue Sword/Dagger weapon candidates using talent detection and a manual build override.
 - Filter Enhancement Shaman two-handed axes and maces using the original talent when talent information is available.
