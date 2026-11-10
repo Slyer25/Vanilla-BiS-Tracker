@@ -64,9 +64,9 @@ assert re.search(r'\[19323\].*pvp=true',data), "Alterac Valley weapon must requi
 audit=(ADDON / "data/SourceAudit.lua").read_text()
 reviewed=re.findall(r'^verified\((\d+),',audit,re.M)
 assert len(reviewed)==len(set(reviewed)), "Duplicate reviewed source ID"
-assert len(reviewed)>=36, "Reviewed acquisition records missing"
+assert set(map(int, reviewed)) == set(slot_by_id), "Every catalog item requires reviewed acquisition evidence"
 assert all(int(i) in slot_by_id for i in reviewed), "Audit references missing item IDs"
-assert audit.count('https://') >= len(reviewed), "Not enough evidence links for reviewed items"
+assert audit.count('https://') >= len(reviewed), "Missing reviewed acquisition evidence URLs"
 assert re.search(r'^verified\(18506,', audit, re.M), "Missing verified Dire Maul crafting source"
 assert 'item.sourceStatus="needs-review"' in audit, "Missing default source confidence status"
 assert 'item.sourceRef=url' in audit, "Missing source evidence references"
