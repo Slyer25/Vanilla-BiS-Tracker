@@ -115,7 +115,7 @@ v:GetPlannedItems()["Main Hand"]=nil
 -- Devilsaur 2-piece bonus recognition.
 v:GetPlannedItems()["Hands"]=15063
 local impact=v:GetSetImpact("Legs",15062)
-assert(impact and string.find(impact,"+2%% melee hit"),"Set threshold missing")
+assert(impact and string.find(impact,"+2% melee hit",1,true),"Set threshold missing")
 
 v.class="ROGUE"
 v.detectedSpec="Combat"
