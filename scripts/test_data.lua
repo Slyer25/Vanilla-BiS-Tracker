@@ -61,6 +61,7 @@ assert(not has("Ring 1",19325), "PvP gear wrongly in pre-raid")
 assert(not has("Trinket 1",19406), "BWL gear wrongly in pre-raid")
 assert(not has("Head",16908), "Onyxia Bloodfang hood leaked into pre-raid")
 assert(not has("Main Hand",19352), "BWL sword leaked into pre-raid")
+assert(not has("Feet",18506), "Dire Maul-only Mongoose Boots leaked into pre-raid")
 VBTDB.phase=2
 assert(has("Shoulders",16823), "MC gear missing")
 assert(has("Head",16908), "Onyxia Bloodfang Hood missing")
@@ -75,6 +76,7 @@ assert(not has("Wrists",16911), "BWL bracers leaked into MC")
 assert(not has("Trinket 1",19406), "BWL gear leaked into MC")
 VBTDB.phase=3
 assert(has("Ring 1",18500), "Dire Maul gear missing")
+assert(has("Feet",18506), "Mongoose Boots missing after Dire Maul unlock")
 assert(not has("Ring 1",19325), "PvP rewards wrongly included without toggle")
 VBTDB.includePvP=true
 assert(has("Ring 1",19325), "PvP gear missing with toggle enabled")
@@ -117,6 +119,9 @@ v:GetPlannedItems()["Ring 1"]=17063
 assert(table.getn(v:GetPlanWarnings())>0,"Unique ring warning missing")
 v:GetPlannedItems()["Ring 1"]=nil
 assert(v.items[18805].sourceStatus=="verified","Known item source audit was not loaded")
+assert(v.items[18506].sourceStatus=="verified" and v.items[18506].phase==3, "Mongoose Boots source/phase audit missing")
+assert(v.items[19436].sourceType=="raid-trash", "BWL trash cloak must not be boss-classified")
+assert(v.items[19146].boss and string.find(v.items[19146].boss, "Lucifron",1,true), "Wristguards of Stability source incomplete")
 assert(v.items[18538].sourceStatus=="needs-review","Unreviewed sources must stay flagged")
 v:GetPlannedItems()["Main Hand"]=nil
 -- Devilsaur 2-piece bonus recognition.
