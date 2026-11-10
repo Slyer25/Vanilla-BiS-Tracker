@@ -70,8 +70,8 @@ assert 'item.sourceStatus="needs-review"' in audit, "Missing default source conf
 assert 'item.sourceRef=url' in audit, "Missing source evidence references"
 rules=(ADDON / "data/GearRules.lua").read_text()
 assert 'VBT.gearSets' in rules, "Missing set-bonus metadata"
-assert re.search(r'VBT\\.items\\[id\\]\\.requiresTalent\\s*=', rules), "Missing two-handed talent metadata"
-assert re.search(r'VBT\\.items\\[id\\]\\.unique\\s*=\\s*true', rules), "Missing unique-item metadata"
+assert 'VBT.items[id].requiresTalent=' in rules, "Missing two-handed talent metadata"
+assert 'VBT.items[id].unique=true' in rules, "Missing unique-item metadata"
 engine=(ADDON / "GearEngine.lua").read_text()
 for fn in ['GetWeaponBuild','MeetsTalentRequirement','PlanItem','GetSetCounts','GetPlanWarnings']:
     assert ('function VBT:'+fn) in engine, f"Shared gear function missing: {fn}"
