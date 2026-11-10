@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0 — Shared gear rules, loadout planning and source auditing
+- Distinguish Combat Rogue Sword/Dagger weapon candidates using talent detection and a manual build override.
+- Filter Enhancement Shaman two-handed axes and maces using the original talent when talent information is available.
+- Add an optional per-character planned loadout, independent from obtained-item tracking.
+- Prevent the same unique item being planned in two ring slots and automatically clear off-hand choices when a two-handed weapon is selected.
+- Display relevant Devilsaur, Shadowcraft, Bloodfang, Black Dragon Mail and Dal'Rend set effects based on planned items; this is a set-awareness tool, not a damage simulator.
+- Add structured acquisition-source records with links, acquisition types, and requirements. Unreviewed items are explicitly marked pending.
+- Add original Vanilla raid daggers Perdition's Blade and Core Hound Tooth for Combat Daggers.
+- Increase detail-panel height to fit source requirements and set-impact notes.
+- Extend mock data and UI tests for new talent/build, set, unique-item, planning and source-audit behavior.
+- Preserve original 1.12 Lua API compatibility, seven progression stages, and existing saved obtained/position data.
+
+
 ## 0.4.0 — Expanded Combat Rogue and Enhancement Shaman databases
 - Expand the original Vanilla 1.12 candidate item database from 26 to 57 item IDs, with 88 ranked entries across Combat Rogue and Enhancement Shaman.
 - Add Rogue Bloodfang items, raid sword upgrades, rings, pre-raid Shadowcraft alternatives, crafted/dungeon boots, and the MC ranged weapon.
