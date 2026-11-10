@@ -1,6 +1,6 @@
 VanillaBiSTracker = VanillaBiSTracker or {}
 local VBT = VanillaBiSTracker
-VBT.version = "0.5.1
+VBT.version = "0.5.1"
 VBT.phase = 3
 VBT.classes = {
   WARRIOR = {"Arms", "Fury", "Protection"},
