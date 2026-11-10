@@ -109,6 +109,13 @@ assert(ok and v:IsPlanned("Ring 2",17063) and not v:IsPlanned("Ring 1",17063),
 v:GetPlannedItems()["Off Hand"]=12939
 ok,why=v:PlanItem("Main Hand",18538)
 assert(ok and v:GetPlannedItems()["Off Hand"]==nil,"Two-handed weapon did not clear offhand")
+-- The warning engine flags conflicts if a pre-existing SavedVariable plan is invalid.
+v:GetPlannedItems()["Off Hand"]=12939
+assert(table.getn(v:GetPlanWarnings())>0,"2H/off-hand conflict warning missing")
+v:GetPlannedItems()["Off Hand"]=nil
+v:GetPlannedItems()["Ring 1"]=17063
+assert(table.getn(v:GetPlanWarnings())>0,"Unique ring warning missing")
+v:GetPlannedItems()["Ring 1"]=nil
 assert(v.items[18805].sourceStatus=="verified","Known item source audit was not loaded")
 assert(v.items[18538].sourceStatus=="needs-review","Unreviewed sources must stay flagged")
 v:GetPlannedItems()["Main Hand"]=nil
