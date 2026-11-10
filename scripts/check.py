@@ -56,10 +56,24 @@ for display_slot, line in slot_blocks:
     for rec_id in re.findall(r'\{id=(\d+),rank=', line):
         assert slot_by_id[int(rec_id)] == accepted, (
             display_slot, rec_id, slot_by_id[int(rec_id)])
-assert len(item_rows) >= 55, "Expanded dataset missing"
+assert len(item_rows) >= 59, "Expanded dataset missing"
 assert "pvp=true" in data, "PvP filtering lacks any example item"
 assert re.search(r'\[19323\].*pvp=true',data), "Alterac Valley weapon must require PvP toggle"
+# Validate structural source-review inventory before introducing later raid phases.
+audit=(ADDON / "data/SourceAudit.lua").read_text()
+reviewed=re.findall(r'^verified\((\d+),',audit,re.M)
+assert len(reviewed)==len(set(reviewed)), "Duplicate reviewed source ID"
+assert len(reviewed)>=15, "Reviewed acquisition records missing"
+assert all(int(i) in slot_by_id for i in reviewed), "Audit references missing item IDs"
+assert 'item.sourceStatus="needs-review"' in audit, "Missing default source confidence status"
+assert 'item.sourceRef=url' in audit, "Missing source evidence references"
+rules=(ADDON / "data/GearRules.lua").read_text()
+assert 'VBT.gearSets' in rules and 'requiresTalent' in rules and 'item.unique' in rules
+engine=(ADDON / "GearEngine.lua").read_text()
+for fn in ['GetWeaponBuild','MeetsTalentRequirement','PlanItem','GetSetCounts','GetPlanWarnings']:
+    assert ('function VBT:'+fn) in engine, f"Shared gear function missing: {fn}"
+assert 'PassesGearRequirements(item,slot)' in (ADDON / "Core.lua").read_text()
 assert "SLASH_VBTSTATUS1" in (ADDON / "Bootstrap.lua").read_text()
 core = (ADDON / "Core.lua").read_text()
 assert "VBT:DetectCharacter(); VBT:ToggleUI()" in core, "Lost tested auto-spec refresh"
-print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations, slot compatibility")
+print(f"PASS: TOC paths, Vanilla checks, release notes, {len(item_rows)} item IDs, {len(recs)} recommendations, slot compatibility, {len(reviewed)} reviewed sources")
