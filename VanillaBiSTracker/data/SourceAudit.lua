@@ -43,5 +43,3 @@ verified(16984,"craft","Leatherworking","Black Dragon Mail",
 verified(19323,"reputation","Alterac Valley","Frostwolf Clan / Stormpike Guard",
   "Exalted reputation; PvP rewards toggle required",
   "https://www.wowhead.com/classic/item=19323")
-verified(18805,"raid","Molten Core","Majordomo Executus",nil,
-  "https://www.wowhead.com/classic/item=18805")
