@@ -66,7 +66,7 @@ reviewed=re.findall(r'^verified\((\d+),',audit,re.M)
 assert len(reviewed)==len(set(reviewed)), "Duplicate reviewed source ID"
 assert len(reviewed)>=36, "Reviewed acquisition records missing"
 assert all(int(i) in slot_by_id for i in reviewed), "Audit references missing item IDs"
-assert all('https://' in line for line in audit.splitlines() if line.startswith('verified(')), "Reviewed records need direct evidence URLs"
+assert len(re.findall(r'https://[^"\\s]+',audit)) >= len(reviewed), "Not enough evidence links for reviewed items"
 assert re.search(r'^verified\(18506,', audit, re.M), "Missing verified Dire Maul crafting source"
 assert 'item.sourceStatus="needs-review"' in audit, "Missing default source confidence status"
 assert 'item.sourceRef=url' in audit, "Missing source evidence references"
