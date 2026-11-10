@@ -1,11 +1,11 @@
 # Vanilla BiS Tracker — WoW 1.12
 
-**v0.3.2 hotfix prerelease — v0.1.3 character detection was verified in-game; v0.2.1 item display, phase/PvP gating, and tooltips were confirmed in-game; v0.3.0 item details, obtained tracking, and tooltips were validated in-game; v0.3.1 visual changes were reviewed in-game; movable details in v0.3.2 await testing.** Independent from MTSL Zone Hunter.
+**v0.5.0 development prerelease — baseline character/UI/phase and position persistence tested in Vanilla 1.12; shared gear rules and source-audit UI require an in-game test.**
 
-A fully offline, original Vanilla 1.12 gear recommendation addon. Intended to use progressive content availability with final patch 1.12 item stats. v0.4.0 includes a **partial, curated candidate list** for Combat Rogue and Enhancement Shaman (57 original Vanilla item IDs, 88 candidate references). It is not a complete BiS guide or an automatic gear optimizer. Recommendations use the final 1.12 items and progressive unlock stages; other class/spec slots remain unpopulated.
+A fully offline, original Vanilla 1.12 gear recommendation addon. Intended to use progressive content availability with final patch 1.12 item stats. v0.5.0 includes a **partial, curated candidate list** for Combat Rogue (Sword and Dagger builds) and Enhancement Shaman (59 original Vanilla item IDs). It is not a complete BiS guide or an automatic gear optimizer. Recommendations use the final 1.12 items and progressive unlock stages; other class/spec slots remain unpopulated.
 
 ## Important: correct installation layout
-Download **Vanilla-BiS-Tracker-0.4.0.zip** from the release's **Assets** section. Do not use GitHub's automatically generated *Source code (zip)* file as an installable addon. If using an Actions artifact, it is wrapped in an outer ZIP: open it and extract the *inner* `Vanilla-BiS-Tracker-0.4.0.zip`.
+Download **Vanilla-BiS-Tracker-0.5.0.zip** from the release's **Assets** section. Do not use GitHub's automatically generated *Source code (zip)* file as an installable addon. If using an Actions artifact, it is wrapped in an outer ZIP: open it and extract the *inner* `Vanilla-BiS-Tracker-0.5.0.zip`.
 
 The directory must be exactly:
 
@@ -21,6 +21,15 @@ If `/bis` and `/vbt` do nothing, confirm *Vanilla BiS Tracker* is enabled in the
 
 ## Test feedback
 A Rogue test on original Vanilla 1.12 confirmed `/bis talents` correctly reads Assassination 16 / Combat 32 / Subtlety 3 and selects Combat; the initial UI opening had shown Unknown. In 0.3.2, the default UI command refreshes character/talent information before showing the window. Retest automatic selection after login without issuing `/bis talents` first.
+
+## v0.5.0 shared gear and acquisition tests
+1. On a Combat Rogue, use the new **Weapons** button to switch between Auto, Sword and Dagger; with Molten Core enabled, Sword lists should include Vis'kag while Dagger lists should offer Perdition's Blade and Core Hound Tooth. If talent points clearly favor Dagger Specialization, Auto should choose daggers.
+2. On an Enhancement Shaman, test two-handed axes/maces with and without the **Two-Handed Axes and Maces** talent. They should be excluded if the talent is known to be absent. If the talent API cannot report the rank, the addon errs on the side of keeping them visible.
+3. Left-click an item, choose **Add to plan**, and check the [Plan] marker. Plan status is separate from the existing [Owned] flag. For Devilsaur, plan the gloves and then inspect the leggings to see the two-piece +2% hit benefit. Unique rings cannot occupy both ring slots in the planned loadout.
+4. Inspect the source-review status in item details. Only reviewed sources are presented without the pending-warning label. See [source audit](docs/SOURCE_AUDIT.md) for reviewed and still-pending records.
+5. Verify closing, reopening, and /reload preserve both window positions and existing obtained flags.
+
+**Not yet implemented:** real DPS simulation, automatic gear optimization, guaranteed accuracy of historical patch-by-patch acquisition sources, or complete recommendations for all classes/raids.
 
 ## v0.4.0 database and position test
 1. On a Combat Rogue choose Pre-Raid and inspect Wrists (Shadowcraft), Feet (Mongoose/Swiftwalker/Shadowcraft), and Ranged (Blackcrow). At MC/Onyxia inspect Head (Bloodfang Hood), Rings (Band of Accuria), and Main Hand (Vis'kag). At BWL inspect the Chromatically Tempered Sword, Maladath, and Bloodfang chest/bracers/belt/boots.
@@ -40,7 +49,7 @@ Commands: `/vbtstatus` for loading diagnostics; `/bis` or `/vbt` to toggle; `/bi
 - Real Vanilla Lua 5.0 and API assumptions; no modern Classic APIs. No SoD/custom private server item data.
 - Phase order: pre-raid launch; MC/Onyxia; Dire Maul and world bosses; BWL; ZG; AQ; Naxx. Sub-patch content, Battleground releases, PvP Rank rewards, quests, and reputations require a more granular schedule before data import.
 - Talent specialization is inferred from points spent per tree, not an official 1.12 specialization API. Hybrid builds may require a manual selection.
-- Item clicks currently print the item name, ID, and acquisition source in chat; they do NOT mark it obtained.\n- The initial curated list is deliberately incomplete. Gear candidates, source notes, item tooltips and pagination are implemented. Bag/equipped detection, unique-equipped conflict handling and simmed/set-aware optimization are future work. See [item sources](docs/DATA_SOURCES.md).
+- Item clicks currently print the item name, ID, and acquisition source in chat; they do NOT mark it obtained.\n- The initial curated list is deliberately incomplete. Gear candidates, source notes, item tooltips and pagination are implemented. Bag/equipped detection, unique-equipped conflict handling and simmed/set-aware optimization are future work. See [item sources](docs/DATA_SOURCES.md) and [source audit](docs/SOURCE_AUDIT.md).
 - Automated static checks, Lua syntax compilation, mock UI testing and phase/PvP data-filter tests run in GitHub Actions; manual in-game checks remain mandatory.
 
 ## Developer build
